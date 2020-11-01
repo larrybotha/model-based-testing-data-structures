@@ -21,10 +21,10 @@
   - has a fixed size
   - is initialised for a specific type
 
-
 ### Typed array types
 
 | type              | size in bytes |
+| ---               | ---           |
 | Int8Array         | 1             |
 | Uint8Array        | 1             |
 | Uint8ClampedArray | 1             |
