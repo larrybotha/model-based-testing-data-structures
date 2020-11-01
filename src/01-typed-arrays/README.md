@@ -20,7 +20,7 @@
 - a typed array:
   - has a fixed size
   - is initialised for a specific type:
-    -
+
       | type              | size in bytes |
       | ---               | ---           |
       | Int8Array         | 1             |
