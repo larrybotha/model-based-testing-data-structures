@@ -4,6 +4,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
+- [Examples](#examples)
 - [When to use](#when-to-use)
 - [Notes](#notes)
 
@@ -12,6 +13,10 @@
 ```bash
 $ npm run dev -- src/01*
 ```
+
+## Examples
+
+- [index.ts](./index.ts)
 
 ## When to use
 
