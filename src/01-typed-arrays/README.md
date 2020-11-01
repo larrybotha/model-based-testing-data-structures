@@ -6,9 +6,12 @@
 
 - [When to use](#when-to-use)
 - [Notes](#notes)
-  - [Typed array types](#typed-array-types)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+```bash
+$ npm run dev -- src/01*
+```
 
 ## When to use
 
@@ -32,6 +35,4 @@
       | Uint32Array       | 4             |
       | Float32Array      | 4             |
       | Float64Array      | 8             |
-
-### Typed array types
 

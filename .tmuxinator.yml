@@ -1,4 +1,4 @@
-name: black-umbrellas-portal
+name: model-based-testing-data-structures
 root: <%= Dir.pwd %>
 
 windows:
@@ -6,6 +6,6 @@ windows:
       layout: main-vertical
       panes:
         - vim
+        - npm run dev
         - npm run test:watch
-        - npm run tsc:watch
         -
