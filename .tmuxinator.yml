@@ -1,0 +1,11 @@
+name: black-umbrellas-portal
+root: <%= Dir.pwd %>
+
+windows:
+  - frontend:
+      layout: main-vertical
+      panes:
+        - vim
+        - npm run test:watch
+        - npm run tsc:watch
+        -

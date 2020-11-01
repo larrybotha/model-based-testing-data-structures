@@ -1,0 +1,33 @@
+{
+  "name": "model-based-testing-data-structures",
+  "version": "1.0.0",
+  "description": "A learning project to both learn about model-based testing and data structures using TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "npm run test -- --watch",
+    "tsc:watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larrybotha/model-based-testing-data-structures.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/larrybotha/model-based-testing-data-structures/issues"
+  },
+  "homepage": "https://github.com/larrybotha/model-based-testing-data-structures#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "@xstate/test": "^0.4.1",
+    "doctoc": "^1.4.0",
+    "husky": "^4.3.0",
+    "jest": "^26.6.1",
+    "lint-staged": "^10.5.1",
+    "ts-jest": "^26.4.3",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.5"
+  }
+}

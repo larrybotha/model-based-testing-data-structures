@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "incremental": true,
+    "noEmit": true,
+    "strict": true
+  }
+}
