@@ -28,6 +28,7 @@
     "lint-staged": "^10.5.1",
     "ts-jest": "^26.4.3",
     "ts-node-dev": "^1.0.0",
-    "typescript": "^4.0.5"
+    "typescript": "^4.0.5",
+    "xstate": "^4.13.0"
   }
 }

@@ -17,7 +17,7 @@ $ npm run dev -- src/02*
 ## Examples
 
 - [index.ts](./index.ts)
-- [index.test.ts](./index.test.ts)
+- [index.test.js](./index.test.js)
 
 
 ## When to use
