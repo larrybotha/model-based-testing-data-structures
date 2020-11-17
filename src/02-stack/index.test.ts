@@ -24,8 +24,7 @@ const stackMachine = Machine({
       },
 
       meta: {
-        test: (stack: any, ...rest: any[]) => {
-          debugger;
+        test: (stack: any, ...rest) => {
           expect(stack.size()).toBe(0);
         },
       },
@@ -38,7 +37,8 @@ const stackMachine = Machine({
       },
 
       meta: {
-        test: (stack: any) => {
+        test: (stack: any, ...rest: any[]) => {
+          debugger;
           expect(stack.size()).toBeGreaterThan(0);
         },
       },
@@ -49,8 +49,9 @@ const stackMachine = Machine({
 const stackModel = createModel(stackMachine).withEvents({
   ADD_ITEM: {
     exec: (stack: any, ...rest: any[]) => {
-      debugger;
       stack.push("foo");
+
+      return "goo";
     },
     cases: [
       { filterBy: "field1" },
