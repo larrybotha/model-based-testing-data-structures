@@ -1,4 +1,10 @@
-const stackFactory = <T = any>() => {
+export interface Stack<T = any> {
+  pop(): T;
+  push(value: T): void;
+  size(): number;
+}
+
+const stackFactory = <T = any>(): Stack<T> => {
   let xs: T[] = [];
 
   function pop() {
