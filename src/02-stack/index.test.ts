@@ -2,6 +2,7 @@ import { assign, Machine } from "xstate";
 import { createModel } from "@xstate/test";
 
 import { stackFactory } from "./";
+import { Stack } from "./";
 
 const stackMachine = Machine({
   id: "stack",
@@ -10,35 +11,30 @@ const stackMachine = Machine({
 
   context: { hasTransitioned: false },
 
-  on: {
-    GET_SIZE: ".",
-  },
-
   states: {
     empty: {
-      exit: assign({ hasTransitioned: true }),
-
       on: {
         ADD_ITEM: "notEmpty",
         REMOVE_ITEM: ".",
       },
 
       meta: {
-        test: (stack: any, ...rest) => {
+        test: (stack: Stack) => {
           expect(stack.size()).toBe(0);
         },
       },
     },
 
     notEmpty: {
+      exit: assign({ hasTransitioned: true }),
+
       on: {
-        ADD_ITEM: ".",
+        ADD_ITEM: { internal: false, target: "." },
         REMOVE_ITEM: "empty",
       },
 
       meta: {
-        test: (stack: any, ...rest: any[]) => {
-          debugger;
+        test: (stack: Stack) => {
           expect(stack.size()).toBeGreaterThan(0);
         },
       },
@@ -46,29 +42,16 @@ const stackMachine = Machine({
   },
 });
 
-const stackModel = createModel(stackMachine).withEvents({
+const stackModel = createModel<Stack, any>(stackMachine).withEvents({
   ADD_ITEM: {
-    exec: (stack: any, ...rest: any[]) => {
+    exec: (stack) => {
       stack.push("foo");
-
-      return "goo";
     },
-    cases: [
-      { filterBy: "field1" },
-      { filterBy: "field2" },
-      { filterBy: "field3" },
-    ],
   },
 
   REMOVE_ITEM: {
-    exec: (stack: any) => {
+    exec: (stack) => {
       stack.pop();
-    },
-  },
-
-  GET_SIZE: {
-    exec: (stack: any) => {
-      stack.size();
     },
   },
 });
