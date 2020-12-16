@@ -17,3 +17,4 @@ Questions](https://www.freecodecamp.org/learn/coding-interview-prep/data-structu
 
 - [01 - Typed Arrays](./01-typed-arrays)
 - [02 - Stack](./02-stack)
+- [03 - Queue](./03-queue)
