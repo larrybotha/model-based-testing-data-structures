@@ -1,7 +1,10 @@
-export interface Stack<T = any> {
-  pop(): T;
+export interface Stack<T = any | undefined> {
+  pop(): T | undefined;
   push(value: T): void;
   size(): number;
+  isEmpty(): boolean;
+  peek(): T | undefined;
+  clear(): void;
 }
 
 const stackFactory = <T = any>(): Stack<T> => {
@@ -22,7 +25,22 @@ const stackFactory = <T = any>(): Stack<T> => {
     return xs.length;
   }
 
+  function peek() {
+    return xs.slice(-1).find(Boolean);
+  }
+
+  function isEmpty() {
+    return xs.length === 0;
+  }
+
+  function clear() {
+    xs = [];
+  }
+
   return {
+    clear,
+    isEmpty,
+    peek,
     pop,
     push,
     size,

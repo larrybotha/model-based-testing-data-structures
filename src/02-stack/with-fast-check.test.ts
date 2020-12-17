@@ -9,7 +9,6 @@ describe("stack with fast-check", () => {
     fc.assert(
       fc.property(fc.commands(commands, 100), (cmds) => {
         const stack = stackFactory();
-
         const s = () => ({ model: [], real: stack });
 
         fc.modelRun(s, cmds);

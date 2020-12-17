@@ -43,8 +43,42 @@ class SizeCommand implements StackCommand {
   toString = () => `size`;
 }
 
+class IsEmptyCommand implements StackCommand {
+  check = (m: Readonly<Model>) => true;
+
+  run(m: Model, r: Stack): void {
+    expect(r.isEmpty()).toBe(m.length === 0);
+  }
+
+  toString = () => `isEmpty`;
+}
+
+class PeekCommand implements StackCommand {
+  check = (m: Readonly<Model>) => true;
+
+  run(m: Model, r: Stack): void {
+    expect(r.peek()).toBe(m.slice(-1)[0]);
+  }
+
+  toString = () => `peek`;
+}
+
+class ClearCommand implements StackCommand {
+  check = (m: Readonly<Model>) => true;
+
+  run(m: Model, r: Stack): void {
+    r.clear();
+    m.length = 0;
+  }
+
+  toString = () => `peek`;
+}
+
 const commands = [
-  fc.string().map((v) => new PushCommand(v)),
+  fc.json().map((v) => new PushCommand(v)),
+  fc.constant(new ClearCommand()),
+  fc.constant(new IsEmptyCommand()),
+  fc.constant(new PeekCommand()),
   fc.constant(new PopCommand()),
   fc.constant(new SizeCommand()),
 ];
