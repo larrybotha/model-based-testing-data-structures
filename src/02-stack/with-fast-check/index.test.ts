@@ -1,8 +1,8 @@
 import fc from "fast-check";
 
-import { stackFactory } from "./";
+import { stackFactory } from "../";
 
-import { commands } from "./test-commands";
+import { commands } from "./commands";
 
 describe("stack with fast-check", () => {
   test("-> model-based", () => {
