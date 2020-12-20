@@ -5,19 +5,35 @@ type Queue = any;
 
 type QueueCommand = fc.Command<Model, Queue>;
 
-class PushCommand implements QueueCommand {
+class EnqueueCommand implements QueueCommand {
   constructor(public readonly value: any) {}
 
   check = (m: Readonly<Model>) => true;
 
   run(m: Model, r: Queue) {
-    r.push(this.value);
+    r.enqueue(this.value);
     m.push(this.value);
   }
 
-  toString = () => `push(${this.value})`;
+  toString = () => `enqueue(${this.value})`;
 }
 
-const commands = [fc.json().map((v) => new PushCommand(v))];
+class DequeueCommand implements QueueCommand {
+  check = (m: Readonly<Model>) => true;
+
+  run(m: Model, r: Queue) {
+    const qValue = r.dequeue();
+    const mValue = m.unshift();
+
+    expect(qValue).toBe(mValue);
+  }
+
+  toString = () => `dequeue`;
+}
+
+const commands = [
+  fc.json().map((v) => new EnqueueCommand(v)),
+  fc.constant(new DequeueCommand()),
+];
 
 export { commands };
