@@ -1,26 +1,46 @@
 export interface Queue<T = any> {
-  enqueue(T): void;
   dequeue(): T;
+  enqueue(value: T): void;
+  front(): T;
+  isEmpty(): boolean;
+  size(): number;
 }
 
 const queueFactory = <T = any>(): Queue<T> => {
-  let xs = [];
+  let xs: T[] = [];
 
   function enqueue(value: T) {
     xs = xs.concat(value);
   }
 
   function dequeue() {
-    const value = xs[0];
+    const value = front();
 
     xs = xs.slice(1);
 
     return value;
   }
 
+  function front() {
+    const value = xs[0];
+
+    return value;
+  }
+
+  function size() {
+    return xs.length;
+  }
+
+  function isEmpty() {
+    return size() === 0;
+  }
+
   return {
-    enqueue,
     dequeue,
+    enqueue,
+    front,
+    isEmpty,
+    size,
   };
 };
 

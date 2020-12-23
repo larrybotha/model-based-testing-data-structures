@@ -8,7 +8,7 @@ type QueueCommand = fc.Command<Model, Queue>;
 class EnqueueCommand implements QueueCommand {
   constructor(public readonly value: any) {}
 
-  check = (m: Readonly<Model>) => true;
+  check = () => true;
 
   run(m: Model, r: Queue) {
     r.enqueue(this.value);
@@ -19,11 +19,11 @@ class EnqueueCommand implements QueueCommand {
 }
 
 class DequeueCommand implements QueueCommand {
-  check = (m: Readonly<Model>) => true;
+  check = () => true;
 
   run(m: Model, r: Queue) {
     const qValue = r.dequeue();
-    const mValue = m.unshift();
+    const mValue = m.shift();
 
     expect(qValue).toBe(mValue);
   }
@@ -31,9 +31,45 @@ class DequeueCommand implements QueueCommand {
   toString = () => `dequeue`;
 }
 
+class FrontCommand implements QueueCommand {
+  check = () => true;
+
+  run(m: Model, r: Queue) {
+    const qValue = r.front();
+    const mValue = m[0];
+
+    expect(qValue).toBe(mValue);
+  }
+
+  toString = () => `front`;
+}
+
+class SizeCommand implements QueueCommand {
+  check = () => true;
+
+  run(m: Model, r: Queue) {
+    expect(r.size()).toBe(m.length);
+  }
+
+  toString = () => `size`;
+}
+
+class IsEmptyCommand implements QueueCommand {
+  check = () => true;
+
+  run(m: Model, r: Queue) {
+    expect(r.isEmpty()).toBe(m.length === 0);
+  }
+
+  toString = () => `isEmpty`;
+}
+
 const commands = [
-  fc.json().map((v) => new EnqueueCommand(v)),
   fc.constant(new DequeueCommand()),
+  fc.constant(new FrontCommand()),
+  fc.constant(new IsEmptyCommand()),
+  fc.constant(new SizeCommand()),
+  fc.json().map((v) => new EnqueueCommand(v)),
 ];
 
 export { commands };
