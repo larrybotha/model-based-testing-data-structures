@@ -1,8 +1,7 @@
 import { assign, Machine } from "xstate";
 import { createModel } from "@xstate/test";
 
-import { stackFactory } from "./";
-import { Stack } from "./";
+import { stackFactory, Stack } from "./";
 
 const stackMachine = Machine({
   id: "stack",
