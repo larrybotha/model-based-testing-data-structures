@@ -14,6 +14,7 @@ const queueMachine = Machine({
     empty: {
       on: {
         ADD_ITEM: "notEmpty",
+        GET_SIZE: { internal: false, target: "." },
         REMOVE_ITEM: ".",
       },
 
@@ -25,8 +26,11 @@ const queueMachine = Machine({
     },
 
     notEmpty: {
+      exit: assign({ hasTransitioned: true }),
+
       on: {
         ADD_ITEM: { internal: false, target: "." },
+        GET_SIZE: { internal: false, target: "." },
         REMOVE_ITEM: "empty",
       },
 
@@ -51,10 +55,17 @@ const queueModel = createModel<Queue, any>(queueMachine).withEvents({
       queue.dequeue();
     },
   },
+
+  GET_SIZE: {
+    exec: (queue) => {
+      queue.size();
+    },
+  },
 });
 
 describe("queueFactory", () => {
   const testPlans = queueModel.getShortestPathPlans();
+  //const testPlans = queueModel.getSimplePathPlans();
 
   testPlans.forEach((plan) => {
     describe(plan.description, () => {
