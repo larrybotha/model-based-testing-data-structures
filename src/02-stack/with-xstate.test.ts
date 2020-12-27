@@ -8,6 +8,19 @@ interface SUTContext {
   timesTransitioned: number;
 }
 
+const addItem = assign<SUTContext>({
+  model: ({ model }, event: any) => model.concat(event.value),
+});
+const removeItem = assign<SUTContext>({
+  model: ({ model }) => model.slice(0, -1),
+});
+const incrementTransitions = assign<SUTContext>({
+  timesTransitioned: ({ timesTransitioned }) => timesTransitioned + 1,
+});
+const hasItems = ({ model }: SUTContext) => {
+  return model.length >= 1;
+};
+
 const sutMachine = Machine<SUTContext>(
   {
     id: "stack-sut",
@@ -22,13 +35,23 @@ const sutMachine = Machine<SUTContext>(
     states: {
       empty: {
         on: {
-          ADD_ITEM: { actions: ["addItem"], target: "notEmpty" },
-          GET_SIZE: { internal: false, target: "." },
+          ADD_ITEM: {
+            actions: ["addItem", "incrementTransitions"],
+
+            target: "notEmpty",
+          },
+
+          GET_SIZE: {
+            internal: false,
+            target: ".",
+            actions: "incrementTransitions",
+          },
+
           REMOVE_ITEM: ".",
         },
 
         meta: {
-          test: (stack: Stack, ...args: any[]) => {
+          test: (stack: Stack) => {
             expect(stack.size()).toBe(0);
           },
         },
@@ -36,22 +59,32 @@ const sutMachine = Machine<SUTContext>(
 
       notEmpty: {
         on: {
-          //ADD_ITEM: { actions: ["addItem"], internal: false, target: "." },
-          //GET_SIZE: { internal: false, target: "." },
+          ADD_ITEM: {
+            actions: ["addItem", "incrementTransitions"],
+            internal: false,
+            target: ".",
+          },
+
+          GET_SIZE: {
+            internal: false,
+            target: ".",
+            actions: "incrementTransitions",
+          },
+
           REMOVE_ITEM: [
-            //{
-            //actions: ["removeItem"],
-            //cond: "hasItems",
-            //internal: false,
-            //target: ".",
-            //},
-            { actions: ["removeItem"], target: "empty" },
+            {
+              actions: [removeItem, incrementTransitions],
+              cond: hasItems,
+              internal: false,
+              target: ".",
+            },
+            { actions: [removeItem], target: "empty" },
           ],
         },
 
         meta: {
-          test: (stack: Stack) => {
-            expect(stack.size()).toBeGreaterThan(0);
+          test: (stack: Stack, state: any) => {
+            expect(stack.size()).toBe(state.context.model.length);
           },
         },
       },
@@ -60,31 +93,12 @@ const sutMachine = Machine<SUTContext>(
 
   {
     actions: {
-      addItem: assign(({ model, timesTransitioned }, event: any) => {
-        return {
-          model: model.concat(event.value),
-          timesTransitioned: timesTransitioned + 1,
-        };
-      }),
-
-      removeItem: assign(({ model, timesTransitioned }) => {
-        console.log(model);
-        return {
-          model: model.slice(0, -1),
-          timesTransitioned: timesTransitioned + 1,
-        };
-      }),
-
-      //incrementTransitions: assign((context) => ({
-      //...context,
-      //timesTransitioned: context.timesTransitioned + 1,
-      //})),
+      incrementTransitions,
+      addItem,
     },
 
     guards: {
-      hasItems: ({ model }) => {
-        return model.length >= 1;
-      },
+      hasItems,
     },
   }
 );
@@ -94,7 +108,7 @@ const stackModel = createModel<Stack, SUTContext>(sutMachine).withEvents({
     exec: (stack, event: any) => {
       stack.push(event.value);
     },
-    cases: [{ value: "foo" }, { value: "bar" }],
+    cases: [{ value: "foo" }],
   },
 
   REMOVE_ITEM: {
@@ -103,23 +117,23 @@ const stackModel = createModel<Stack, SUTContext>(sutMachine).withEvents({
     },
   },
 
-  //GET_SIZE: {
-  //exec: (stack) => {
-  //stack.size();
-  //},
-  //},
+  GET_SIZE: {
+    exec: (stack) => {
+      stack.size();
+    },
+  },
 });
 
-describe("stack", () => {
-  const simplePathTestPlans = stackModel.getSimplePathPlans({
-    filter: (state) => {
-      const { context } = state;
-      const { timesTransitioned, model } = context;
+const filter = (state: any) => {
+  const { context } = state;
+  const { timesTransitioned } = context;
 
-      return timesTransitioned > 2 || model.length > 2;
-    },
-  });
-  const shortestPathTestPlans = stackModel.getShortestPathPlans();
+  return timesTransitioned < 5;
+};
+
+describe("stack", () => {
+  const simplePathTestPlans = stackModel.getSimplePathPlans({ filter });
+  const shortestPathTestPlans = stackModel.getShortestPathPlans({ filter });
 
   //shortestPathTestPlans.forEach((plan) => {
   simplePathTestPlans.forEach((plan) => {
