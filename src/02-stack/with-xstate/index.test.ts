@@ -1,25 +1,12 @@
 import { assign, Machine } from "xstate";
 import { createModel } from "@xstate/test";
 
-import { stackFactory, Stack } from "./";
+import { stackFactory, Stack } from "..";
 
 interface SUTContext {
   model: any[];
   timesTransitioned: number;
 }
-
-const addItem = assign<SUTContext>({
-  model: ({ model }, event: any) => model.concat(event.value),
-});
-const removeItem = assign<SUTContext>({
-  model: ({ model }) => model.slice(0, -1),
-});
-const incrementTransitions = assign<SUTContext>({
-  timesTransitioned: ({ timesTransitioned }) => timesTransitioned + 1,
-});
-const hasItems = ({ model }: SUTContext) => {
-  return model.length >= 1;
-};
 
 const sutMachine = Machine<SUTContext>(
   {
@@ -42,12 +29,24 @@ const sutMachine = Machine<SUTContext>(
           },
 
           GET_SIZE: {
-            internal: false,
             target: ".",
             actions: "incrementTransitions",
           },
 
-          REMOVE_ITEM: ".",
+          REMOVE_ITEM: {
+            target: ".",
+            actions: "incrementTransitions",
+          },
+
+          PEEK: {
+            actions: ["incrementTransitions"],
+            target: ".",
+          },
+
+          CLEAR: {
+            target: ".",
+            actions: "incrementTransitions",
+          },
         },
 
         meta: {
@@ -61,25 +60,32 @@ const sutMachine = Machine<SUTContext>(
         on: {
           ADD_ITEM: {
             actions: ["addItem", "incrementTransitions"],
-            internal: false,
             target: ".",
           },
 
           GET_SIZE: {
-            internal: false,
             target: ".",
             actions: "incrementTransitions",
           },
 
           REMOVE_ITEM: [
             {
-              actions: [removeItem, incrementTransitions],
-              cond: hasItems,
-              internal: false,
+              actions: ["removeItem", "incrementTransitions"],
+              cond: "hasItems",
               target: ".",
             },
-            { actions: [removeItem], target: "empty" },
+            { actions: ["removeItem"], target: "empty" },
           ],
+
+          PEEK: {
+            actions: ["incrementTransitions"],
+            target: ".",
+          },
+
+          CLEAR: {
+            actions: ["clearItems", "incrementTransitions"],
+            target: "empty",
+          },
         },
 
         meta: {
@@ -93,12 +99,27 @@ const sutMachine = Machine<SUTContext>(
 
   {
     actions: {
-      incrementTransitions,
-      addItem,
+      addItem: assign<SUTContext>({
+        model: ({ model }, event: any) => model.concat(event.value),
+      }),
+
+      removeItem: assign<SUTContext>({
+        model: ({ model }) => model.slice(0, -1),
+      }),
+
+      clearItems: assign<SUTContext>({
+        model: [],
+      }),
+
+      incrementTransitions: assign<SUTContext>({
+        timesTransitioned: ({ timesTransitioned }) => timesTransitioned + 1,
+      }),
     },
 
     guards: {
-      hasItems,
+      hasItems: ({ model }: SUTContext) => {
+        return model.length > 0;
+      },
     },
   }
 );
@@ -120,6 +141,24 @@ const stackModel = createModel<Stack, SUTContext>(sutMachine).withEvents({
   GET_SIZE: {
     exec: (stack) => {
       stack.size();
+    },
+  },
+
+  PEEK: {
+    exec: (stack) => {
+      stack.peek();
+    },
+  },
+
+  CLEAR: {
+    exec: (stack) => {
+      stack.clear();
+    },
+  },
+
+  CHECK_IF_EMPTY: {
+    exec: (stack) => {
+      stack.clear();
     },
   },
 });
