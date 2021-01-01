@@ -1,6 +1,8 @@
 import { assign, Machine } from "xstate";
 import { createModel } from "@xstate/test";
 
+import { testAllPlans } from "@testutils";
+
 import { stackFactory, Stack } from "..";
 
 interface SUTContext {
@@ -174,20 +176,23 @@ describe("stack", () => {
   const simplePathTestPlans = stackModel.getSimplePathPlans({ filter });
   const shortestPathTestPlans = stackModel.getShortestPathPlans({ filter });
 
-  //shortestPathTestPlans.forEach((plan) => {
-  simplePathTestPlans.forEach((plan) => {
-    describe(plan.description, () => {
-      plan.paths.forEach((path) => {
-        it(path.description, async () => {
-          const stack = stackFactory();
+  describe("-> simple paths", () => {
+    testAllPlans(simplePathTestPlans, async (testPath) => {
+      const stack = stackFactory();
 
-          await path.test(stack);
-        });
-      });
+      await testPath.test(stack);
     });
   });
 
-  it("should have full coverage", () => {
+  describe("-> shortest paths", () => {
+    testAllPlans(shortestPathTestPlans, async (testPath) => {
+      const stack = stackFactory();
+
+      await testPath.test(stack);
+    });
+  });
+
+  test("-> has full coverage", () => {
     return stackModel.testCoverage();
   });
 });
