@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "incremental": true,
     "noEmit": true,
-    "strict": true
+    "strict": true,
+    "moduleResolution": "node",
+    "paths": {
+      "@testutils": ["test/utils"],
+      "@testutils/*": ["test/utils/*"]
+    }
   }
 }
