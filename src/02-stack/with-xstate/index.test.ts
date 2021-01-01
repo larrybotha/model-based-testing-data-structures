@@ -1,4 +1,4 @@
-import { assign, Machine } from "xstate";
+import { AnyEventObject, assign, Machine } from "xstate";
 import { createModel } from "@xstate/test";
 
 import { testAllPlans } from "@testutils";
@@ -9,6 +9,43 @@ interface SUTContext {
   model: any[];
   timesTransitioned: number;
 }
+
+const assertEvent = (
+  stack: Stack,
+  { context, event }: { context: SUTContext; event: AnyEventObject }
+) => {
+  const { model } = context;
+
+  switch (event.type) {
+    case "ADD_ITEM":
+    case "REMOVE_ITEM":
+    case "GET_SIZE": {
+      expect(stack.size()).toBe(model.length);
+      break;
+    }
+
+    case "PEEK": {
+      const expected = model.slice().pop();
+      const actual = stack.peek();
+
+      expect(actual).toBe(expected);
+      break;
+    }
+
+    case "CHECK_IF_EMPTY": {
+      const expected = Boolean(model.length === 0);
+      const actual = stack.isEmpty();
+
+      expect(actual).toBe(expected);
+      break;
+    }
+
+    case "CLEAR": {
+      expect(stack.size()).toBe(0);
+      break;
+    }
+  }
+};
 
 const sutMachine = Machine<SUTContext>(
   {
@@ -26,18 +63,22 @@ const sutMachine = Machine<SUTContext>(
         on: {
           ADD_ITEM: {
             actions: ["addItem", "incrementTransitions"],
-
             target: "notEmpty",
           },
 
           GET_SIZE: {
+            actions: ["incrementTransitions"],
             target: ".",
-            actions: "incrementTransitions",
           },
 
           REMOVE_ITEM: {
+            actions: ["removeItem", "incrementTransitions"],
             target: ".",
-            actions: "incrementTransitions",
+          },
+
+          CHECK_IF_EMPTY: {
+            actions: ["incrementTransitions"],
+            target: ".",
           },
 
           PEEK: {
@@ -46,14 +87,16 @@ const sutMachine = Machine<SUTContext>(
           },
 
           CLEAR: {
+            actions: ["clearItems", "incrementTransitions"],
             target: ".",
-            actions: "incrementTransitions",
           },
         },
 
         meta: {
-          test: (stack: Stack) => {
+          test: (stack: Stack, state: any) => {
             expect(stack.size()).toBe(0);
+
+            assertEvent(stack, state);
           },
         },
       },
@@ -66,8 +109,8 @@ const sutMachine = Machine<SUTContext>(
           },
 
           GET_SIZE: {
+            actions: ["incrementTransitions"],
             target: ".",
-            actions: "incrementTransitions",
           },
 
           REMOVE_ITEM: [
@@ -76,10 +119,18 @@ const sutMachine = Machine<SUTContext>(
               cond: "hasItems",
               target: ".",
             },
-            { actions: ["removeItem"], target: "empty" },
+            {
+              actions: ["removeItem", "incrementTransitions"],
+              target: "empty",
+            },
           ],
 
           PEEK: {
+            actions: ["incrementTransitions"],
+            target: ".",
+          },
+
+          CHECK_IF_EMPTY: {
             actions: ["incrementTransitions"],
             target: ".",
           },
@@ -90,16 +141,13 @@ const sutMachine = Machine<SUTContext>(
           },
         },
 
-        meta: {
-          test: (stack: Stack, state: any) => {
-            expect(stack.size()).toBe(state.context.model.length);
-          },
-        },
+        meta: { test: assertEvent },
       },
     },
   },
 
   {
+    // update the model
     actions: {
       addItem: assign<SUTContext>({
         model: ({ model }, event: any) => model.concat(event.value),
@@ -126,6 +174,7 @@ const sutMachine = Machine<SUTContext>(
   }
 );
 
+// update the real value
 const stackModel = createModel<Stack, SUTContext>(sutMachine).withEvents({
   ADD_ITEM: {
     exec: (stack, event: any) => {
@@ -140,36 +189,27 @@ const stackModel = createModel<Stack, SUTContext>(sutMachine).withEvents({
     },
   },
 
-  GET_SIZE: {
-    exec: (stack) => {
-      stack.size();
-    },
-  },
-
-  PEEK: {
-    exec: (stack) => {
-      stack.peek();
-    },
-  },
-
   CLEAR: {
     exec: (stack) => {
       stack.clear();
     },
   },
 
-  CHECK_IF_EMPTY: {
-    exec: (stack) => {
-      stack.clear();
-    },
-  },
+  GET_SIZE: {},
+  PEEK: {},
+  CHECK_IF_EMPTY: {},
 });
 
 const filter = (state: any) => {
   const { context } = state;
   const { timesTransitioned } = context;
 
-  return timesTransitioned < 5;
+  // how many transitions will be sufficient to cover potentially problematic
+  // sequences of events?
+  return (
+    timesTransitioned <
+    Math.ceil((2 * Object.keys(stackModel.options.events).length) / 3)
+  );
 };
 
 describe("stack", () => {
