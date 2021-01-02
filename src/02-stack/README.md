@@ -4,13 +4,13 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Examples](#examples)
 - [When to use](#when-to-use)
 - [Pros and Cons](#pros-and-cons)
   - [Pros](#pros)
   - [Cons](#cons)
 - [Notes](#notes)
   - [Xstate Model-based Testing](#xstate-model-based-testing)
+- [Examples](#examples)
 - [Resources](#resources)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -21,16 +21,6 @@ $ npm run dev -- src/02*
 
 - [index.ts](./index.ts)
 - [index.test.js](./index.test.js)
-
-## Examples
-
-- balancing of symbols, e.g. `[({})]` is balanced
-- undo / redo
-- call stacks
-- browser history API
-- tower of hanoi
-- backtracking algorithms (e.g. time-travel in Redux)
-- string reversal
 
 ## When to use
 
@@ -97,6 +87,16 @@ $ npm run dev -- src/02*
     is that sequences of commands succeed. There may be scenarios where explicit
     states are beneficial to test, and others where arbitrary sequences of
     commands are beneficial to test.
+
+## Examples
+
+- balancing of symbols, e.g. `[({})]` is balanced
+- undo / redo
+- call stacks
+- browser history API
+- tower of hanoi
+- backtracking algorithms (e.g. time-travel in Redux)
+- string reversal
 
 ## Resources
 
