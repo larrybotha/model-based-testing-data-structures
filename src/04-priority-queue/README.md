@@ -1,4 +1,4 @@
-# Queue
+# Priority Queue
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -15,7 +15,7 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ```bash
-$ npm run dev -- src/03*
+$ npm run dev -- src/04*
 ```
 
 - [index.ts](./index.ts)
@@ -43,9 +43,8 @@ $ npm run dev -- src/03*
 
 - `enqueue` is `O(1)`
 - `dequeue` is `O(n)` - every element must be shifted
-- `front` is `O(1)`
+- `top` is `O(1)`
 - `isEmpty` is `O(1)`
-- `size` is `O(1)`
 
 ## Resources
 
