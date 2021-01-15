@@ -15,6 +15,8 @@ Questions](https://www.freecodecamp.org/learn/coding-interview-prep/data-structu
 
 ## Data Structures
 
-- [01 - Typed Arrays](./01-typed-arrays)
-- [02 - Stack](./02-stack)
-- [03 - Queue](./03-queue)
+- [01 - Typed Arrays](./src/01-typed-arrays)
+- [02 - Stack](./src/02-stack)
+- [03 - Queue](./src/03-queue)
+- [04 - Priority Queue](./src/04-priority-queue)
+- [05 - Circular Queue](./src/05-circular-queue)
