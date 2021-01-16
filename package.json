@@ -20,8 +20,10 @@
   },
   "homepage": "https://github.com/larrybotha/model-based-testing-data-structures#readme",
   "devDependencies": {
+    "@types/benchmark": "^2.1.0",
     "@types/jest": "^26.0.19",
     "@xstate/test": "^0.4.1",
+    "benchmark": "^2.1.4",
     "doctoc": "^2.0.0",
     "fast-check": "^2.10.0",
     "husky": "^4.3.6",
