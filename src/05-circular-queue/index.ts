@@ -171,4 +171,92 @@ const circularQueueFactory = function circularQueueFactory<T = any>(
   };
 };
 
-export { circularQueueFactory };
+const circularQueueObjectFactory = function circularQueueFactory<T = any>(
+  maxSize: number
+): CircularQueue<T> {
+  /**
+   * object implementation
+   *
+   * O(1)
+   */
+  let collection: Record<number, T | null> = {};
+  /**
+   * Map implementation
+   *
+   * O(1)
+   */
+  let readPointer = 0;
+  let writePointer = 0;
+
+  /**
+   * enqueue
+   *
+   * O(1)
+   *
+   * @param {T} value
+   */
+  function enqueue(value: T) {
+    let result = null;
+
+    if (maxSize > 0 && !(writePointer in collection)) {
+      result = value;
+
+      collection[writePointer] = value;
+      writePointer = (writePointer + 1) % maxSize;
+    }
+
+    return result;
+  }
+
+  /**
+   * dequeue
+   *
+   * O(1)
+   */
+  function dequeue() {
+    let result = null;
+
+    if (maxSize > 0 && readPointer in collection) {
+      result = collection[readPointer];
+      delete collection[readPointer];
+      readPointer = (readPointer + 1) % maxSize;
+    }
+
+    return result;
+  }
+
+  /**
+   * size
+   *
+   * O(1)
+   */
+  function size() {
+    let result;
+
+    switch (true) {
+      case readPointer === writePointer && readPointer in collection: {
+        result = maxSize;
+        break;
+      }
+
+      case readPointer > writePointer: {
+        result = maxSize - readPointer + writePointer;
+        break;
+      }
+
+      default: {
+        result = writePointer - readPointer;
+      }
+    }
+
+    return result;
+  }
+
+  return {
+    dequeue,
+    enqueue,
+    size,
+  };
+};
+
+export { circularQueueFactory, circularQueueObjectFactory };
