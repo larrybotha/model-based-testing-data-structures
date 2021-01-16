@@ -1,6 +1,7 @@
 export interface CircularQueue<T = any> {
   dequeue(): T | null | undefined;
   enqueue(value: T): T | null;
+  size(): number;
 }
 
 const circularQueueFactory = function circularQueueFactory<T = any>(
@@ -102,6 +103,39 @@ const circularQueueFactory = function circularQueueFactory<T = any>(
       collection.delete(readPointer);
 
       readPointer = (readPointer + 1) % size;
+  /**
+   * size
+   *
+   * O(1)
+   */
+  function size() {
+    let result;
+
+    switch (true) {
+      /**
+       * array implementation
+       */
+      //case readPointer === writePointer && collection[readPointer] !== null: {
+      /**
+       * object implementation
+       */
+      //case readPointer === writePointer && readPointer in collection: {
+      /**
+       * Map implementation
+       */
+      case readPointer === writePointer && collection.has(readPointer): {
+	result = maxSize;
+	break;
+      }
+
+      case readPointer > writePointer: {
+	result = maxSize - readPointer + writePointer;
+	break;
+      }
+
+      default: {
+	result = writePointer - readPointer;
+      }
     }
 
     return result;
@@ -110,6 +144,7 @@ const circularQueueFactory = function circularQueueFactory<T = any>(
   return {
     dequeue,
     enqueue,
+    size,
   };
 };
 

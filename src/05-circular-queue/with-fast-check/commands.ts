@@ -66,9 +66,27 @@ class DequeueCommand implements CircularQueueCommand {
   toString = () => `dequeue`;
 }
 
+/**
+ * SizeCommand
+ *
+ * Gets number of elements in the queue
+ *
+ * @implements {CircularQueueCommand}
+ */
+class SizeCommand implements CircularQueueCommand {
+  check = () => true;
+
+  run = (model: Model, real: CircularQueue) => {
+    expect(real.size()).toEqual(model.writes);
+  };
+
+  toString = () => `size`;
+}
+
 const commands = [
   fc.json().map((value) => new EnqueueCommand(value)),
   fc.constant(new DequeueCommand()),
+  fc.constant(new SizeCommand()),
 ];
 
 export { commands };
