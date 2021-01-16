@@ -23,7 +23,9 @@ $ npm run dev -- src/05*
 
 ## Examples
 
--
+- software-controlled traffic lights
+- CPU scheduling
+- memory management
 
 ## When to use
 
@@ -41,8 +43,10 @@ $ npm run dev -- src/05*
 
 ## Notes
 
--
+- enqueue has time complexity O(1)
+- dequeue has time complexity O(1)
 
 ## Resources
 
 - [Geeks for geeks - circular queue data structure](https://www.geeksforgeeks.org/circular-queue-set-1-introduction-array-implementation/)
+- [Programiz - circular queue](https://www.programiz.com/dsa/circular-queue)
