@@ -5,23 +5,36 @@ export interface CircularQueue<T = any> {
 }
 
 const circularQueueFactory = function circularQueueFactory<T = any>(
-  size: number
+  maxSize: number
 ): CircularQueue<T> {
   /**
    * Array implementation crashes for arbitrary array sizes
+   *
+   * O(n)
    */
-  //let collection: Array<T | null> = Array(size).fill(null);
+  //let collection: Array<T | null> = Array(maxSize).fill(null);
   /**
    * object implementation
+   *
+   * O(1)
    */
   //let collection: Record<number, T | null> = {};
   /**
    * Map implementation
+   *
+   * O(1)
    */
   let collection = new Map<number, T>();
   let readPointer = 0;
   let writePointer = 0;
 
+  /**
+   * enqueue
+   *
+   * O(1)
+   *
+   * @param {T} value
+   */
   function enqueue(value: T) {
     let result = null;
 
@@ -34,13 +47,13 @@ const circularQueueFactory = function circularQueueFactory<T = any>(
       /**
        * object implementation
        */
-      //size > 0 &&
+      //maxSize > 0 &&
       //!(writePointer in collection)
 
       /**
        * Map implementation
        */
-      size > 0 &&
+      maxSize > 0 &&
       !collection.has(writePointer)
     ) {
       result = value;
@@ -54,17 +67,22 @@ const circularQueueFactory = function circularQueueFactory<T = any>(
        */
       collection.set(writePointer, value);
 
-      writePointer = (writePointer + 1) % size;
+      writePointer = (writePointer + 1) % maxSize;
     }
 
     return result;
   }
 
+  /**
+   * dequeue
+   *
+   * O(1)
+   */
   function dequeue() {
     let result = null;
 
     if (
-      size > 0 &&
+      maxSize > 0 &&
       /**
        * Array implementation
        */
@@ -102,7 +120,12 @@ const circularQueueFactory = function circularQueueFactory<T = any>(
        */
       collection.delete(readPointer);
 
-      readPointer = (readPointer + 1) % size;
+      readPointer = (readPointer + 1) % maxSize;
+    }
+
+    return result;
+  }
+
   /**
    * size
    *
@@ -124,17 +147,17 @@ const circularQueueFactory = function circularQueueFactory<T = any>(
        * Map implementation
        */
       case readPointer === writePointer && collection.has(readPointer): {
-	result = maxSize;
-	break;
+        result = maxSize;
+        break;
       }
 
       case readPointer > writePointer: {
-	result = maxSize - readPointer + writePointer;
-	break;
+        result = maxSize - readPointer + writePointer;
+        break;
       }
 
       default: {
-	result = writePointer - readPointer;
+        result = writePointer - readPointer;
       }
     }
 
