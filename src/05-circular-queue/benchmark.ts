@@ -1,15 +1,18 @@
-import * as bm from "benchmark";
+import b from "benny";
 import fc from "fast-check";
 
-import { circularQueueFactory, circularQueueObjectFactory } from "./";
+import {
+  CircularQueueFactory,
+  circularQueueArrayFactory,
+  circularQueueFactory,
+  circularQueueObjectFactory,
+} from "./";
 import { commands } from "./with-fast-check/commands";
 
 const arbQueueSize = fc.integer({ min: 0, max: 100 });
 
 const size = fc.sample(arbQueueSize, 1)[0];
-const queueCommands = fc.sample(fc.commands(commands, 100), 1)[0];
-
-const suite = new bm.Suite();
+const queueCommands: any = fc.sample(fc.commands(commands, 100), 1)[0];
 
 function executeCommand(entity: any, cmdWrapper: any) {
   const { name } = cmdWrapper.constructor.name;
@@ -28,28 +31,31 @@ function executeCommand(entity: any, cmdWrapper: any) {
   }
 }
 
-suite
-  .add("circular queue - map implementation", () => {
-    const queue = circularQueueFactory(size);
+function runInstance(
+  factory: CircularQueueFactory,
+  size: number,
+  commands: any[]
+) {
+  const queue = factory(size);
 
-    (queueCommands as any).commands.map((cmd: any) =>
-      executeCommand(queue, cmd)
-    );
-  })
+  commands.map((cmd: any) => executeCommand(queue, cmd));
+}
 
-  .add("circular queue - object implementation", () => {
-    const queue = circularQueueObjectFactory(size);
+b.suite(
+  "Circular Queue",
 
-    (queueCommands as any).commands.map((cmd: any) =>
-      executeCommand(queue, cmd)
-    );
-  });
+  b.add("Map implementation", () => {
+    runInstance(circularQueueFactory, size, queueCommands.commands);
+  }),
 
-suite
-  .on("cycle", (event: any) => {
-    console.log(String(event.target));
-  })
-  .on("complete", () => {
-    console.log(`Fastest is ${suite.filter("fastest").map("name")}`);
-  })
-  .run();
+  b.add("Array implementation", () => {
+    runInstance(circularQueueArrayFactory, size, queueCommands.commands);
+  }),
+
+  b.add("Object implementation", () => {
+    runInstance(circularQueueObjectFactory, size, queueCommands.commands);
+  }),
+
+  b.cycle(),
+  b.complete()
+);
