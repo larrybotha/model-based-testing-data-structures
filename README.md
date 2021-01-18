@@ -20,3 +20,4 @@ Questions](https://www.freecodecamp.org/learn/coding-interview-prep/data-structu
 - [03 - Queue](./src/03-queue)
 - [04 - Priority Queue](./src/04-priority-queue)
 - [05 - Circular Queue](./src/05-circular-queue)
+- [06 - Hash Table](./src/06-hash-table)
