@@ -1,262 +1,62 @@
-export interface CircularQueue<T = any> {
-  dequeue(): T | null | undefined;
-  enqueue(value: T): T | null;
-  size(): number;
+export interface HashTable<T = any> {
+  add(key: string, value: T): void;
+  remove(key: string): void;
+  lookup(key: string): T | undefined;
 }
 
-export type CircularQueueFactory = <T = any>(
-  maxSize: number
-) => CircularQueue<T>;
+type HashingFunction = (key: string) => string | number;
 
-const circularQueueFactory = function circularQueueFactory<T = any>(
-  maxSize: number
-): CircularQueue<T> {
-  let collection = new Map<number, T>();
-  let readPointer = 0;
-  let writePointer = 0;
+const naiveHash: HashingFunction = (key: string) => {
+  const xs = key.split("").map((s) => s.charCodeAt(0));
 
-  /**
-   * enqueue
-   *
-   * O(1)
-   *
-   * @param {T} value
-   */
-  function enqueue(value: T) {
-    let result = null;
-
-    if (maxSize > 0 && !collection.has(writePointer)) {
-      result = value;
-      collection.set(writePointer, value);
-
-      writePointer = (writePointer + 1) % maxSize;
-    }
-
-    return result;
-  }
-
-  /**
-   * dequeue
-   *
-   * O(1)
-   */
-  function dequeue() {
-    let result = null;
-
-    if (maxSize > 0 && collection.has(readPointer)) {
-      result = collection.get(readPointer);
-      collection.delete(readPointer);
-
-      readPointer = (readPointer + 1) % maxSize;
-    }
-
-    return result;
-  }
-
-  /**
-   * size
-   *
-   * O(1)
-   */
-  function size() {
-    let result;
-
-    switch (true) {
-      case readPointer === writePointer && collection.has(readPointer): {
-        result = maxSize;
-        break;
-      }
-
-      case readPointer > writePointer: {
-        result = maxSize - readPointer + writePointer;
-        break;
-      }
-
-      default: {
-        result = writePointer - readPointer;
-      }
-    }
-
-    return result;
-  }
-
-  return {
-    dequeue,
-    enqueue,
-    size,
-  };
+  return xs.reduce((acc, x) => acc + x, 0);
 };
 
-const circularQueueArrayFactory = function circularQueueFactory<T = any>(
-  maxSize: number
-): CircularQueue<T> {
-  /**
-   * O(n)
-   */
-  let collection: Array<T | null> = Array(maxSize).fill(null);
-  let readPointer = 0;
-  let writePointer = 0;
+const id = (key: string) => key;
 
-  /**
-   * enqueue
-   *
-   * O(1)
-   *
-   * @param {T} value
-   */
-  function enqueue(value: T) {
-    let result = null;
+function hashTableFactory<T = any>(
+  primaryHashingFunction: HashingFunction = naiveHash,
+  secondaryHashingFunction: HashingFunction = id
+): HashTable<T> {
+  const collection: Record<number | string, Record<number | string, T>> = {};
 
-    if (collection[writePointer] === null) {
-      result = value;
-      collection[writePointer] = value;
-      writePointer = (writePointer + 1) % maxSize;
+  function add(key: string, value: T) {
+    const primaryHash = primaryHashingFunction(key);
+    const secondaryHash = secondaryHashingFunction(key);
+
+    if (!collection[primaryHash]) {
+      collection[primaryHash] = {};
     }
 
-    return result;
+    collection[primaryHash][secondaryHash] = value;
   }
 
-  /**
-   * dequeue
-   *
-   * O(1)
-   */
-  function dequeue() {
-    let result = null;
+  function remove(key: string) {
+    const primaryHash = primaryHashingFunction(key);
+    const secondaryHash = secondaryHashingFunction(key);
 
-    if (maxSize > 0 && collection[readPointer] !== null) {
-      result = collection[readPointer];
-      collection[readPointer] = null;
-      readPointer = (readPointer + 1) % maxSize;
+    if (!collection[primaryHash]) {
+      return;
     }
 
-    return result;
-  }
+    delete collection[primaryHash][secondaryHash];
 
-  /**
-   * size
-   *
-   * O(1)
-   */
-  function size() {
-    let result;
-
-    switch (true) {
-      case readPointer === writePointer && collection[readPointer] !== null: {
-        result = maxSize;
-        break;
-      }
-
-      case readPointer > writePointer: {
-        result = maxSize - readPointer + writePointer;
-        break;
-      }
-
-      default: {
-        result = writePointer - readPointer;
-      }
+    // clean up
+    if (Object.values(collection[primaryHash]).length === 0) {
+      delete collection[primaryHash];
     }
-
-    return result;
   }
 
-  return {
-    dequeue,
-    enqueue,
-    size,
-  };
-};
+  function lookup(key: string) {
+    const primaryHash = primaryHashingFunction(key);
+    const secondaryHash = secondaryHashingFunction(key);
 
-const circularQueueObjectFactory = function circularQueueFactory<T = any>(
-  maxSize: number
-): CircularQueue<T> {
-  /**
-   * object implementation
-   *
-   * O(1)
-   */
-  let collection: Record<number, T | null> = {};
-  /**
-   * Map implementation
-   *
-   * O(1)
-   */
-  let readPointer = 0;
-  let writePointer = 0;
-
-  /**
-   * enqueue
-   *
-   * O(1)
-   *
-   * @param {T} value
-   */
-  function enqueue(value: T) {
-    let result = null;
-
-    if (maxSize > 0 && !(writePointer in collection)) {
-      result = value;
-
-      collection[writePointer] = value;
-      writePointer = (writePointer + 1) % maxSize;
-    }
-
-    return result;
+    return collection[primaryHash]
+      ? collection[primaryHash][secondaryHash]
+      : undefined;
   }
 
-  /**
-   * dequeue
-   *
-   * O(1)
-   */
-  function dequeue() {
-    let result = null;
+  return { add, lookup, remove };
+}
 
-    if (maxSize > 0 && readPointer in collection) {
-      result = collection[readPointer];
-      delete collection[readPointer];
-      readPointer = (readPointer + 1) % maxSize;
-    }
-
-    return result;
-  }
-
-  /**
-   * size
-   *
-   * O(1)
-   */
-  function size() {
-    let result;
-
-    switch (true) {
-      case readPointer === writePointer && readPointer in collection: {
-        result = maxSize;
-        break;
-      }
-
-      case readPointer > writePointer: {
-        result = maxSize - readPointer + writePointer;
-        break;
-      }
-
-      default: {
-        result = writePointer - readPointer;
-      }
-    }
-
-    return result;
-  }
-
-  return {
-    dequeue,
-    enqueue,
-    size,
-  };
-};
-
-export {
-  circularQueueFactory,
-  circularQueueObjectFactory,
-  circularQueueArrayFactory,
-};
+export { hashTableFactory };
