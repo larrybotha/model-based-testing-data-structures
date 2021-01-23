@@ -57,3 +57,7 @@ $ node -r ./node_modules/ts-node/register ./src/06-hash-table/benchmark.ts
 
 ## Resources
 
+- [Geeks For Geeks - Hashing - Separate Chaining](https://www.geeksforgeeks.org/hashing-set-2-separate-chaining/)
+- [Geeks For Geeks - Hashing - Open Addressing](https://www.geeksforgeeks.org/hashing-set-3-open-addressing/)
+- [Geeks For Geeks - Double Hashing](https://www.geeksforgeeks.org/double-hashing/)
+- [CSC2100B - Hashing (diagrams)](https://www.cse.cuhk.edu.hk/irwin.king/_media/teaching/csc2100b/tu6.pdf)
