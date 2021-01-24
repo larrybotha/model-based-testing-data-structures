@@ -1,12 +1,12 @@
 import fc from "fast-check";
 
-import { hashTableFactory } from "..";
+import { hashTableDoubleHashFactory } from "..";
 
 import { commands, Model } from "./commands";
 
 describe.each`
-  name           | factory
-  ${"HashTable"} | ${hashTableFactory}
+  name                            | factory
+  ${"HashTable - Double Hashing"} | ${hashTableDoubleHashFactory}
 `("-> $name with fast-check", ({ factory, name }) => {
   test("-> model-based", () => {
     fc.assert(

@@ -14,7 +14,7 @@ const naiveHash: HashingFunction = (key: string) => {
 
 const id = (key: string) => key;
 
-function hashTableFactory<T = any>(
+function hashTableDoubleHashFactory<T = any>(
   primaryHashingFunction: HashingFunction = naiveHash,
   secondaryHashingFunction: HashingFunction = id
 ): HashTable<T> {
@@ -59,4 +59,4 @@ function hashTableFactory<T = any>(
   return { add, lookup, remove };
 }
 
-export { hashTableFactory };
+export { hashTableDoubleHashFactory };
