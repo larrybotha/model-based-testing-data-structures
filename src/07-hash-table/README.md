@@ -14,13 +14,13 @@
 
 ```bash
 # TypeScript
-$ npm run dev -- src/06*
+$ npm run dev -- src/07*
 
 # Tests
-$ npm run test:watch -- src/06*
+$ npm run test:watch -- src/07*
 
 # Benchmark
-$ node -r ./node_modules/ts-node/register ./src/06-hash-table/benchmark.ts
+$ node -r ./node_modules/ts-node/register ./src/07-hash-table/benchmark.ts
 ```
 
 - [index.ts](./index.ts)
