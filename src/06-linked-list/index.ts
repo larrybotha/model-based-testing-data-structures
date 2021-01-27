@@ -1,9 +1,16 @@
+interface LinkedListNode<T = any> {
+  element: T;
+  next: LinkedListNode<T>;
+}
+
 export interface LinkedList<T = any> {
   add(value: T): void;
   remove(value: T): void;
   isEmpty(): boolean;
   indexOf(value: T): number;
   elementAt(index: number): T;
+  removeAt(index: number): LinkedListNode<T> | null;
+  addAt(index: number, value: T): boolean;
 }
 
 function linkedListFactory<T = any>(): LinkedList<T> {
@@ -19,7 +26,15 @@ function linkedListFactory<T = any>(): LinkedList<T> {
     return (undefined as unknown) as T;
   }
 
-  return { add, isEmpty, remove, indexOf, elementAt };
+  function removeAt(index: number) {
+    return null;
+  }
+
+  function addAt(index: number, value: T) {
+    return false;
+  }
+
+  return { add, addAt, isEmpty, remove, indexOf, elementAt, removeAt };
 }
 
 export { linkedListFactory };
