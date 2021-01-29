@@ -4,9 +4,7 @@ import { LinkedList } from "..";
 
 type LinkedListCommand = Command<any, LinkedList>;
 
-export interface Model {
-  [key: string]: any;
-}
+export type Model = amy[];
 
 /**
  * AddCommand
