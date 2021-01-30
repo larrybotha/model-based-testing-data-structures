@@ -72,21 +72,22 @@ const tuples = fc.sample(
     fc.json()
   )
 );
+const arbTuplesIndex = fc.integer({ min: 0, max: tuples.length - 1 });
 
 const commands = [
-  fc.integer({ min: 0, max: tuples.length - 1 }).map((index) => {
+  arbTuplesIndex.map((index) => {
     const [k, v] = tuples[index];
 
     return new AddCommand(k, v);
   }),
 
-  fc.integer({ min: 0, max: tuples.length - 1 }).map((index) => {
+  arbTuplesIndex.map((index) => {
     const [k] = tuples[index];
 
     return new RemoveCommand(k);
   }),
 
-  fc.integer({ min: 0, max: tuples.length - 1 }).map((index) => {
+  arbTuplesIndex.map((index) => {
     const [k] = tuples[index];
 
     return new LookupCommand(k);
