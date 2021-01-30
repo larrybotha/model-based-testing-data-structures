@@ -84,22 +84,37 @@ function linkedListFactory<T = any>(): LinkedList<T> {
 
   function removeAt(index: number) {
     let currNode = prefixNode;
-    let currIndex = -1;
+    let currIndex = 0;
 
-    while (currNode.next && currIndex < Math.max(length, index)) {
+    while (currNode.next && currIndex < index) {
       currNode = currNode.next;
       currIndex++;
     }
 
-    console.log(currNode);
-
-    if (currNode && currIndex === index) {
+    if (currNode.next && currIndex === index) {
       currNode.next = currNode.next ? currNode.next.next : null;
       length--;
     }
   }
 
   function addAt(index: number, value: T) {
+    const node = linkedListNodeFactory(value);
+    let currNode = prefixNode;
+    let currIndex = 0;
+
+    while (currNode.next && currIndex < index) {
+      currNode = currNode.next;
+      currIndex++;
+    }
+
+    if (currNode && currIndex === index) {
+      node.next = currNode.next;
+      currNode.next = node;
+      length++;
+
+      return true;
+    }
+
     return false;
   }
 

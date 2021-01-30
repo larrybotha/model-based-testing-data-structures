@@ -133,6 +133,31 @@ class RemoveAtCommand implements LinkedListCommand {
   toString = () => `removeAt(${this.index})`;
 }
 
+/**
+ * AddAtCommand.
+ *
+ * @implements {LinkedListCommand}
+ */
+class AddAtCommand implements LinkedListCommand {
+  constructor(private index: number, private value: any) {}
+
+  check = () => true;
+
+  run = (m: Model, r: LinkedList) => {
+    if (this.index > -1 && m.length >= this.index) {
+      for (let i = m.length; i > this.index; i--) {
+        m[i] = m[i - 1];
+      }
+
+      m[this.index] = this.value;
+    }
+
+    r.addAt(this.index, this.value);
+  };
+
+  toString = () => `addAt(${this.index}, ${this.value})`;
+}
+
 const tuples = fc.sample(fc.tuple(fc.integer({ min: 0 }), fc.json()));
 const arbTupleIndex = fc.integer({ min: 0, max: tuples.length - 1 });
 
@@ -165,6 +190,12 @@ const commands = [
     const [i] = tuples[index];
 
     return new RemoveAtCommand(i);
+  }),
+
+  arbTupleIndex.map((index) => {
+    const [i, value] = tuples[index];
+
+    return new AddAtCommand(i, value);
   }),
 
   fc.constant(new IsEmptyCommand()),
