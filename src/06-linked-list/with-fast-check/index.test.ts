@@ -12,7 +12,7 @@ describe.each`
     fc.assert(
       fc.property(fc.commands(commands, 100), (cmds) => {
         const hashTable = factory();
-        const model: Model = {};
+        const model: Model = [];
         const sut = () => ({ model, real: hashTable });
 
         fc.modelRun(sut, cmds);
