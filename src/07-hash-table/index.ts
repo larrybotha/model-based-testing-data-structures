@@ -1,3 +1,3 @@
-import { hashTableDoubleHashFactory } from "./open-addressing/double-hash";
+import { hashTableDoubleHashFactory } from "./open-addressing";
 
 export { hashTableDoubleHashFactory };
