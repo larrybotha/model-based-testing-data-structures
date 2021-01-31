@@ -9,12 +9,12 @@ interface LinkedListNodeFactory<Value = any> {
 
 export interface LinkedList<T = any> {
   add(value: T): void;
-  remove(value: T): void;
-  isEmpty(): boolean;
-  indexOf(value: T): number;
-  elementAt(index: number): T;
-  removeAt(index: number): void;
   addAt(index: number, value: T): boolean;
+  elementAt(index: number): T;
+  indexOf(value: T): number;
+  isEmpty(): boolean;
+  remove(value: T): void;
+  removeAt(index: number): void;
 }
 
 const linkedListNodeFactory: LinkedListNodeFactory = (value) => ({
@@ -43,7 +43,7 @@ function linkedListFactory<T = any>(): LinkedList<T> {
     let currNode = prefixNode;
     let found = false;
 
-    while (currNode.next !== null && !found) {
+    while (currNode.next && !found) {
       if (currNode.next.element === value) {
         currNode.next = currNode.next.next;
         found = true;
