@@ -1,6 +1,6 @@
 import fc from "fast-check";
 
-import { hashTableDoubleHashFactory } from "..";
+import { hashTableDoubleHashFactory } from "../..";
 
 import { commands, Model } from "./commands";
 

@@ -1,6 +1,6 @@
 import fc, { Command } from "fast-check";
 
-import { HashTable } from "..";
+import { HashTable } from "../../types";
 
 type HashTableCommand = Command<any, HashTable>;
 
