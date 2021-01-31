@@ -1,18 +1,16 @@
-import { HashTable } from "../types";
+import { HashTable, HashingFunction } from "../types";
 
-type HashingFunction = (key: string) => string | number;
-
-const naiveHash: HashingFunction = (key: string) => {
+const naiveHash: HashingFunction<string> = (key) => {
   const xs = key.split("").map((s) => s.charCodeAt(0));
 
   return xs.reduce((acc, x) => acc + x, 0);
 };
 
-const id = (key: string) => key;
+const id: HashingFunction<string> = (key) => key;
 
 function hashTableDoubleHashFactory<T = any>(
-  primaryHashingFunction: HashingFunction = naiveHash,
-  secondaryHashingFunction: HashingFunction = id
+  primaryHashingFunction = naiveHash,
+  secondaryHashingFunction = id
 ): HashTable<T> {
   const collection: Record<number | string, Record<number | string, T>> = {};
 

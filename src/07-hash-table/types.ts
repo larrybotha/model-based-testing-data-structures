@@ -3,3 +3,7 @@ export interface HashTable<T = any> {
   remove(key: string): void;
   lookup(key: string): T | undefined;
 }
+
+export interface HashingFunction<Key = string | number> {
+  (key: Key): number | string;
+}
