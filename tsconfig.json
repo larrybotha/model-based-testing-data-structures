@@ -7,7 +7,8 @@
     "moduleResolution": "node",
     "paths": {
       "@testutils": ["test/utils"],
-      "@testutils/*": ["test/utils/*"]
+      "@testutils/*": ["test/utils/*"],
+      "@src/*": ["src/*"]
     }
   }
 }
