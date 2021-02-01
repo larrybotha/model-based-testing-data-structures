@@ -1,9 +1,11 @@
-export interface HashTable<T = any> {
-  add(key: string, value: T): void;
-  remove(key: string): void;
-  lookup(key: string): T | undefined;
+export type HashTableKey = string | number;
+
+export interface HashTable<Value = any> {
+  add(key: HashTableKey, value: Value): void;
+  remove(key: HashTableKey): void;
+  lookup(key: HashTableKey): Value | undefined;
 }
 
-export interface HashingFunction<Key = string | number> {
-  (key: Key): number | string;
+export interface HashingFunction {
+  (key: HashTableKey): number;
 }

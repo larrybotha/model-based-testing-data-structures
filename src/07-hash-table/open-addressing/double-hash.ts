@@ -1,20 +1,22 @@
-import { HashTable, HashingFunction } from "../types";
+import { HashTable, HashTableKey, HashingFunction } from "../types";
 
-const naiveHash: HashingFunction<string> = (key) => {
-  const xs = key.split("").map((s) => s.charCodeAt(0));
+const sum = (xs: number[]) => xs.reduce((acc, x) => acc + x, 0);
 
-  return xs.reduce((acc, x) => acc + x, 0);
+const naiveHash: HashingFunction = (key) => {
+  const xs = `${key}`.split("").map((s) => s.charCodeAt(0));
+
+  return sum(xs);
 };
 
-const id: HashingFunction<string> = (key) => key;
+const id = (key: HashTableKey) => key;
 
 function hashTableDoubleHashFactory<T = any>(
   primaryHashingFunction = naiveHash,
   secondaryHashingFunction = id
 ): HashTable<T> {
-  const collection: Record<number | string, Record<number | string, T>> = {};
+  const collection: Record<number, Record<HashTableKey, T>> = {};
 
-  function add(key: string, value: T) {
+  const add: HashTable["add"] = function add(key, value) {
     const primaryHash = primaryHashingFunction(key);
     const secondaryHash = secondaryHashingFunction(key);
 
@@ -23,9 +25,9 @@ function hashTableDoubleHashFactory<T = any>(
     }
 
     collection[primaryHash][secondaryHash] = value;
-  }
+  };
 
-  function remove(key: string) {
+  const remove: HashTable["remove"] = function remove(key) {
     const primaryHash = primaryHashingFunction(key);
     const secondaryHash = secondaryHashingFunction(key);
 
@@ -39,16 +41,16 @@ function hashTableDoubleHashFactory<T = any>(
     if (Object.values(collection[primaryHash]).length === 0) {
       delete collection[primaryHash];
     }
-  }
+  };
 
-  function lookup(key: string) {
+  const lookup: HashTable["lookup"] = function lookup(key) {
     const primaryHash = primaryHashingFunction(key);
     const secondaryHash = secondaryHashingFunction(key);
 
     return collection[primaryHash]
       ? collection[primaryHash][secondaryHash]
       : undefined;
-  }
+  };
 
   return { add, lookup, remove };
 }
