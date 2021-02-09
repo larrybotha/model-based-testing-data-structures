@@ -19,8 +19,14 @@ function hashTableLinkedListFactory<Value = any>(): HashTable<Value> {
     }
 
     const linkedList = collection[hash];
+    const valueToAdd = JSON.stringify([key, value]);
+    const index = linkedList.indexOf(valueToAdd);
 
-    linkedList.add(JSON.stringify([key, value]));
+    if (index > -1) {
+      linkedList.removeAt(index);
+    }
+
+    linkedList.add(valueToAdd);
   };
 
   function remove(key: string) {
@@ -35,10 +41,9 @@ function hashTableLinkedListFactory<Value = any>(): HashTable<Value> {
     let found = false;
 
     while (!found && linkedList.elementAt(index) !== null) {
-      const value = linkedList.elementAt(index);
-      const [listKey] = value ? JSON.parse(value) : [null];
+      const element = linkedList.elementAt(index);
 
-      if (listKey === key) {
+      if (element && element.substr(1).startsWith(`${JSON.stringify(key)}`)) {
         found = true;
       } else {
         index++;
@@ -68,9 +73,9 @@ function hashTableLinkedListFactory<Value = any>(): HashTable<Value> {
 
     while (!found && linkedList.elementAt(index) !== null) {
       const element = linkedList.elementAt(index);
-      const [listKey, value] = element ? JSON.parse(element) : [null];
+      const [, value] = element ? JSON.parse(element) : null;
 
-      if (listKey === key) {
+      if (element && element.substr(1).startsWith(`${JSON.stringify(key)}`)) {
         found = true;
         result = value;
       } else {
