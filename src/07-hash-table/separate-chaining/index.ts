@@ -9,7 +9,7 @@ const hashingFunction: HashingFunction = (key) => {
 };
 
 function hashTableLinkedListFactory<Value = any>(): HashTable<Value> {
-  let collection: Record<number, LinkedList<string>>;
+  let collection: Record<number, LinkedList<string>> = {};
 
   const add: HashTable<Value>["add"] = function add(key, value) {
     const hash = hashingFunction(key);
@@ -27,12 +27,58 @@ function hashTableLinkedListFactory<Value = any>(): HashTable<Value> {
     const hash = hashingFunction(key);
     const linkedList = collection[hash];
 
-    if (linkedList) {
+    if (!linkedList) {
+      return;
+    }
+
+    let index = 0;
+    let found = false;
+
+    while (!found && linkedList.elementAt(index) !== null) {
+      const value = linkedList.elementAt(index);
+      const [listKey] = value ? JSON.parse(value) : [null];
+
+      if (listKey === key) {
+        found = true;
+      } else {
+        index++;
+      }
+    }
+
+    if (found) {
+      linkedList.removeAt(index);
+    }
+
+    if (linkedList.isEmpty()) {
+      delete collection[hash];
     }
   }
 
   function lookup(key: string) {
-    return undefined;
+    const hash = hashingFunction(key);
+    const linkedList = collection[hash];
+
+    if (!linkedList) {
+      return undefined;
+    }
+
+    let index = 0;
+    let found = false;
+    let result = undefined;
+
+    while (!found && linkedList.elementAt(index) !== null) {
+      const element = linkedList.elementAt(index);
+      const [listKey, value] = element ? JSON.parse(element) : [null];
+
+      if (listKey === key) {
+        found = true;
+        result = value;
+      } else {
+        index++;
+      }
+    }
+
+    return result;
   }
 
   return {
