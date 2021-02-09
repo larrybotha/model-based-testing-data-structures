@@ -10,7 +10,7 @@ interface LinkedListNodeFactory<Value = any> {
 export interface LinkedList<T = any> {
   add(value: T): void;
   addAt(index: number, value: T): boolean;
-  elementAt(index: number): T;
+  elementAt(index: number): T | null;
   indexOf(value: T): number;
   isEmpty(): boolean;
   remove(value: T): void;
