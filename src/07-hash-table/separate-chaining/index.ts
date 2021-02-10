@@ -12,6 +12,8 @@ function hashTableLinkedListFactory<Value = any>(): HashTable<Value> {
   let collection: Record<number, LinkedList<string>> = {};
 
   const add: HashTable<Value>["add"] = function add(key, value) {
+    remove(key);
+
     const hash = hashingFunction(key);
 
     if (!collection[hash]) {
@@ -20,16 +22,11 @@ function hashTableLinkedListFactory<Value = any>(): HashTable<Value> {
 
     const linkedList = collection[hash];
     const valueToAdd = JSON.stringify([key, value]);
-    const index = linkedList.indexOf(valueToAdd);
-
-    if (index > -1) {
-      linkedList.removeAt(index);
-    }
 
     linkedList.add(valueToAdd);
   };
 
-  function remove(key: string) {
+  const remove: HashTable<Value>["remove"] = function remove(key) {
     const hash = hashingFunction(key);
     const linkedList = collection[hash];
 
@@ -57,7 +54,7 @@ function hashTableLinkedListFactory<Value = any>(): HashTable<Value> {
     if (linkedList.isEmpty()) {
       delete collection[hash];
     }
-  }
+  };
 
   function lookup(key: string) {
     const hash = hashingFunction(key);

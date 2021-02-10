@@ -7,7 +7,7 @@ import { commands, Model } from "./commands";
 describe.each`
   name                                             | factory
   ${"HashTable - Open Addressing: Double Hashing"} | ${hashTableDoubleHashFactory}
-  ${"HashTable - Separate Chaining: Linked Lisst"} | ${hashTableLinkedListFactory}
+  ${"HashTable - Separate Chaining: Linked List"}  | ${hashTableLinkedListFactory}
 `("-> $name with fast-check", ({ factory }) => {
   test("-> model-based", () => {
     fc.assert(
