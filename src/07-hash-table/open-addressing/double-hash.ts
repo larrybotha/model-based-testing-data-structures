@@ -1,11 +1,9 @@
 import { HashTable, HashTableKey, HashingFunction } from "../types";
 
-const sum = (xs: number[]) => xs.reduce((acc, x) => acc + x, 0);
+const lengthHash: HashingFunction = (key) => {
+  const { length } = String(key);
 
-const naiveHash: HashingFunction = (key) => {
-  const xs = `${key}`.split("").map((s) => s.charCodeAt(0));
-
-  return sum(xs);
+  return length;
 };
 
 const id = (key: HashTableKey) => key;
