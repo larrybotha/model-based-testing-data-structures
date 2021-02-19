@@ -1,4 +1,11 @@
-import { hashTableDoubleHashFactory } from "./open-addressing";
+import {
+  hashTableDoubleHashFactory,
+  hashTableLinearProbingFactory,
+} from "./open-addressing";
 import { hashTableLinkedListFactory } from "./separate-chaining";
 
-export { hashTableDoubleHashFactory, hashTableLinkedListFactory };
+export {
+  hashTableDoubleHashFactory,
+  hashTableLinearProbingFactory,
+  hashTableLinkedListFactory,
+};
