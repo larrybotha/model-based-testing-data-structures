@@ -9,14 +9,14 @@ const lengthHash: HashingFunction = (key) => {
 const id = (key: HashTableKey) => key;
 
 function hashTableDoubleHashFactory<T = any>(
-  primaryHashingFunction = naiveHash,
-  secondaryHashingFunction = id
+  hashX = lengthHash,
+  hashY = id
 ): HashTable<T> {
   const collection: Record<number, Record<HashTableKey, T>> = {};
 
   const add: HashTable["add"] = function add(key, value) {
-    const primaryHash = primaryHashingFunction(key);
-    const secondaryHash = secondaryHashingFunction(key);
+    const primaryHash = hashX(key);
+    const secondaryHash = hashY(key);
 
     if (!collection[primaryHash]) {
       collection[primaryHash] = {};
@@ -26,8 +26,8 @@ function hashTableDoubleHashFactory<T = any>(
   };
 
   const remove: HashTable["remove"] = function remove(key) {
-    const primaryHash = primaryHashingFunction(key);
-    const secondaryHash = secondaryHashingFunction(key);
+    const primaryHash = hashX(key);
+    const secondaryHash = hashY(key);
 
     if (!collection[primaryHash]) {
       return;
@@ -42,8 +42,8 @@ function hashTableDoubleHashFactory<T = any>(
   };
 
   const lookup: HashTable["lookup"] = function lookup(key) {
-    const primaryHash = primaryHashingFunction(key);
-    const secondaryHash = secondaryHashingFunction(key);
+    const primaryHash = hashX(key);
+    const secondaryHash = hashY(key);
 
     return collection[primaryHash]
       ? collection[primaryHash][secondaryHash]
