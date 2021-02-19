@@ -83,6 +83,7 @@ $ node -r ./node_modules/ts-node/register ./src/07-hash-table/benchmark.ts
 
 ## Resources
 
+- [Educative.io - Data Structures 101: implement hash tables in JavaScript](https://www.educative.io/blog/data-strucutres-hash-table-javascript)
 - [Geeks For Geeks - Hashing](https://www.geeksforgeeks.org/hashing-set-1-introduction/)
 - [Geeks For Geeks - Hashing - Separate Chaining](https://www.geeksforgeeks.org/hashing-set-2-separate-chaining/)
 - [Geeks For Geeks - Hashing - Open Addressing](https://www.geeksforgeeks.org/hashing-set-3-open-addressing/)
