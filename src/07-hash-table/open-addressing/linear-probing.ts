@@ -45,8 +45,12 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
       if (valueAtIndex === undefined || keyAtIndex === key) {
         const valueToInsert: Entry<T> = [key, value];
         collection[currHashedKey] = valueToInsert;
-        length++;
         added = true;
+
+        if (valueAtIndex === undefined) {
+          length++;
+        }
+
         break;
       }
 
@@ -71,7 +75,7 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
       const valueAtHashedKey = collection[currHashedKey];
       const [keyAtIndex] = deconstruct(valueAtHashedKey);
 
-      if (valueAtHashedKey && keyAtIndex === key) {
+      if (keyAtIndex === key) {
         collection[currHashedKey] = undefined;
         length--;
         break;
