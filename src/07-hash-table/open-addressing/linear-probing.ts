@@ -1,13 +1,15 @@
 import { HashTable, HashTableKey, HashingFunction } from "../types";
 
+type Entry<Value = any> = [HashTableKey, Value];
+
 function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
-  let collection: Array<string | undefined> = [];
+  let collection: Array<Entry<T> | undefined> = [];
   let size = 10;
   let length = 0;
 
-  const hash: HashingFunction = function hash(key) {
-    return String(key).length % size;
-  };
+  function hash(key: HashTableKey, offset: number) {
+    return (String(key).length + offset) % size;
+  }
 
   function resize() {
     const tmpCollection = collection;
@@ -16,52 +18,44 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
     collection = [];
 
     for (let i = 0; i < oldSize; i++) {
-      const [key, value] = decode(tmpCollection[i]);
+      const indexedValue = tmpCollection[i];
+      const [key, value] = deconstruct(indexedValue);
 
-      if (value) {
+      if (key) {
         add(key, value);
       }
     }
   }
 
-  function encode(key: HashTableKey, value: T) {
-    const stringifiedValue = JSON.stringify(value);
-    const result = `|${key}|:${stringifiedValue}`;
-    console.log("encoded", result);
-    console.log("decoded", decode(result));
+  function deconstruct(indexedValue: Entry<T> | undefined) {
+    const [key, value] = indexedValue ? indexedValue : [];
 
-    return result;
-  }
-
-  function decode(encodedValue?: string) {
-    const [decodedKey, stringifiedValue] = encodedValue
-      ? encodedValue.split(/^$.+$:/)
-      : [];
-    const value = stringifiedValue ? JSON.parse(stringifiedValue) : undefined;
-
-    return [
-      typeof decodedKey === "string" ? decodedKey.slice(-1) : decodedKey,
-      value,
-    ];
+    return [key, value] as Entry<T>;
   }
 
   const add: HashTable["add"] = function add(key, value) {
-    const hashedKey = hash(key);
     let count = 0;
+    let added = false;
 
     while (count < size) {
-      const currHashedKey = hashedKey + count;
+      const currHashedKey = hash(key, count);
       const valueAtHashedKey = collection[currHashedKey];
-      const [decodedKey] = decode(valueAtHashedKey);
+      const [keyAtIndex, valueAtIndex] = deconstruct(valueAtHashedKey);
 
-      if (valueAtHashedKey === undefined || decodedKey === key) {
-        const encodedValue = encode(key, value);
-        collection[currHashedKey] = encodedValue;
+      if (valueAtIndex === undefined || keyAtIndex === key) {
+        const valueToInsert: Entry<T> = [key, value];
+        collection[currHashedKey] = valueToInsert;
         length++;
+        added = true;
         break;
       }
 
       count++;
+    }
+
+    if (!added) {
+      resize();
+      add(key, value);
     }
 
     if (length >= size * 0.6) {
@@ -70,15 +64,14 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
   };
 
   const remove: HashTable["remove"] = function remove(key) {
-    const hashedKey = hash(key);
     let count = 0;
 
     while (count < size) {
-      const currHashedKey = hashedKey + count;
+      const currHashedKey = hash(key, count);
       const valueAtHashedKey = collection[currHashedKey];
-      const [decodedKey] = decode(valueAtHashedKey);
+      const [keyAtIndex] = deconstruct(valueAtHashedKey);
 
-      if (valueAtHashedKey && decodedKey === key) {
+      if (valueAtHashedKey && keyAtIndex === key) {
         collection[currHashedKey] = undefined;
         length--;
         break;
@@ -89,17 +82,16 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
   };
 
   const lookup: HashTable["lookup"] = function lookup(key) {
-    const hashedKey = hash(key);
-    let count = 0;
+    const { length: arrLength } = collection;
     let result;
 
-    for (let i = hashedKey; i < size; i++) {
-      const currHashedKey = hashedKey + count;
+    for (let i = 0; i < arrLength; i++) {
+      const currHashedKey = hash(key, i);
       const valueAtHashedKey = collection[currHashedKey];
-      const [decodedKey] = decode(valueAtHashedKey);
+      const [keyAtIndex, valueAtIndex] = deconstruct(valueAtHashedKey);
 
-      if (valueAtHashedKey && decodedKey === key) {
-        result = valueAtHashedKey;
+      if (typeof valueAtIndex === "string" && keyAtIndex === key) {
+        result = valueAtIndex;
         break;
       }
     }
