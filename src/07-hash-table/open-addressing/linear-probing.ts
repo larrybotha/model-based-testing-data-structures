@@ -21,7 +21,7 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
       const indexedValue = tmpCollection[i];
       const [key, value] = deconstruct(indexedValue);
 
-      if (key) {
+      if (typeof key !== "undefined") {
         add(key, value);
       }
     }
@@ -67,6 +67,9 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
     }
   };
 
+  /**
+   * TODO: remove / mark as deleted items in collection
+   */
   const remove: HashTable["remove"] = function remove(key) {
     let count = 0;
 
