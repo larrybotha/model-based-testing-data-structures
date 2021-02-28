@@ -1,11 +1,11 @@
 import { HashTable, HashTableKey, HashingFunction } from "../types";
 
 type Entry<Value = any> = [HashTableKey, Value];
-
-const log = 0 ? console.log.bind(console) : () => {};
+type IndexedValue<T = any> = Entry<T> | undefined | number;
 
 function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
-  let collection: Array<Entry<T> | undefined> = [];
+  const deletedValue = -1;
+  let collection: Array<IndexedValue<T>> = [];
   let size = 10;
   let length = 0;
 
@@ -29,8 +29,9 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
     }
   }
 
-  function deconstruct(indexedValue: Entry<T> | undefined) {
-    const [key, value] = indexedValue ? indexedValue : [];
+  function deconstruct(indexedValue: IndexedValue<T>) {
+    const [key, value] =
+      indexedValue && typeof indexedValue !== "number" ? indexedValue : [];
 
     return [key, value] as Entry<T>;
   }
@@ -39,14 +40,15 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
     let count = 0;
     let added = false;
 
-    log("add before", collection, key, value);
-
     while (count < size) {
       const currHashedKey = hash(key, count);
       const valueAtHashedKey = collection[currHashedKey];
       const [keyAtIndex, valueAtIndex] = deconstruct(valueAtHashedKey);
 
-      if (valueAtIndex === undefined || keyAtIndex === key) {
+      if (
+        valueAtHashedKey !== deletedValue &&
+        (valueAtIndex === undefined || keyAtIndex === key)
+      ) {
         const valueToInsert: Entry<T> = [key, value];
         collection[currHashedKey] = valueToInsert;
         added = true;
@@ -55,7 +57,6 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
           length++;
         }
 
-        log("add after", collection, key, value);
         break;
       }
 
@@ -72,14 +73,8 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
     }
   };
 
-  /**
-   * TODO: remove / mark as deleted items in collection
-   */
   const remove: HashTable["remove"] = function remove(key) {
     let count = 0;
-    let removed = false;
-
-    log("remove before", collection, key);
 
     while (count < size) {
       const currHashedKey = hash(key, count);
@@ -87,33 +82,12 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
       const [keyAtIndex] = deconstruct(valueAtHashedKey);
 
       if (keyAtIndex === key) {
-        collection[currHashedKey] = undefined;
+        collection[currHashedKey] = deletedValue;
         length--;
-        removed = true;
         break;
       }
 
       count++;
-    }
-
-    if (removed && count === 0) {
-      let hasNextKeys = true;
-
-      while (hasNextKeys) {
-        const nextHashedKey = hash(key, count + 1);
-        const valueAtHashedKey = collection[nextHashedKey];
-        const [keyAtIndex] = deconstruct(valueAtHashedKey);
-
-        if (keyAtIndex && `${keyAtIndex}`.length === `${key}`.length) {
-          collection[nextHashedKey - 1] = collection[nextHashedKey];
-        } else {
-          hasNextKeys = false;
-        }
-      }
-    }
-
-    if (removed) {
-      log("remove after", collection, key);
     }
   };
 
@@ -121,14 +95,12 @@ function hashTableLinearProbingFactory<T = any>(): HashTable<T> {
     const { length: arrLength } = collection;
     let result;
 
-    log("lookup", collection, key);
-
     for (let i = 0; i < arrLength; i++) {
       const currHashedKey = hash(key, i);
       const valueAtHashedKey = collection[currHashedKey];
       const [keyAtIndex, valueAtIndex] = deconstruct(valueAtHashedKey);
 
-      if (typeof valueAtIndex === "string" && keyAtIndex === key) {
+      if (valueAtHashedKey !== deletedValue && keyAtIndex === key) {
         result = valueAtIndex;
         break;
       }
