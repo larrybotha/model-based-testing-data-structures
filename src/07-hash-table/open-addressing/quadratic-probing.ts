@@ -60,7 +60,7 @@ function hashTableQuadraticProbingFactory<T = any>(): HashTable<T> {
         break;
       }
 
-      count++;
+      count = count === 0 ? 2 : Math.pow(count, 2);
     }
 
     if (!added) {
