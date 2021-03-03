@@ -22,3 +22,4 @@ Questions](https://www.freecodecamp.org/learn/coding-interview-prep/data-structu
 - [05 - Circular Queue](./src/05-circular-queue)
 - [06 - Linked List](./src/06-linked-list)
 - [07 - Hash Table](./src/07-hash-table)
+- [08 - Doubly Linked List](./src/08-doubly-linked-list)
