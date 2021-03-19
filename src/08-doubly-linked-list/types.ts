@@ -7,5 +7,5 @@ export interface DoublyLinkedListNode<Data = any> {
 export interface DoublyLinkedList<Value = any> {
   add(value: Value): void;
   remove(value: Value): void;
-  elementAt(index: number): Value;
+  elementAt(index: number): Value | null;
 }
