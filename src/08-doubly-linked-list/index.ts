@@ -14,11 +14,9 @@ function createNode<Data = any>(
 function doublyLinkedListFactory<Value = any>(): DoublyLinkedList<Value> {
   let tail: DoublyLinkedListNode | null = null;
   let head: DoublyLinkedListNode | null = null;
-  const prefixNode = createNode(null);
-  prefixNode.next = head;
 
   function add(value: Value) {
-    const node = createNode(value);
+    const node = createNode(value, tail);
 
     if (!head) {
       head = node;
@@ -32,34 +30,32 @@ function doublyLinkedListFactory<Value = any>(): DoublyLinkedList<Value> {
   }
 
   function remove(value: Value) {
-    let prevNode = createNode(null);
-    prevNode.next = head;
+    let currNode = head;
 
-    while (prevNode.next) {
-      const currNode = prevNode.next;
+    while (currNode) {
       const { data, next, previous } = currNode;
 
       if (data === value) {
-        prevNode.next = next;
+        if (previous) {
+          previous.next = next;
+        } else {
+          head = next;
+        }
+
+        if (!next) {
+          tail = previous ? previous : head;
+        }
       }
 
-      if (!next) {
-        tail = currNode;
-      }
-
-      if (!previous) {
-        head = currNode;
-      }
-
-      prevNode = currNode;
+      currNode = next;
     }
   }
 
   function elementAt(index: number) {
-    let currNode = prefixNode;
-    let count = -1;
+    let currNode = head;
+    let count = 0;
 
-    while (count < index && currNode.next) {
+    while (count < index && currNode) {
       currNode = currNode.next;
       count++;
     }
