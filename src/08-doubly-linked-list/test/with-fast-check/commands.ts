@@ -37,13 +37,16 @@ class RemoveCommand implements DoublyLinkedListCommand {
 
   run = (m: Model, r: DoublyLinkedList) => {
     const index = m.indexOf(this.value);
-    const tmp = m.filter((_, i) => i !== index);
 
-    for (let i = 0; i < m.length; i++) {
-      m[i] = tmp[i];
+    if (index > -1) {
+      const tmp = m.filter((_, i) => i !== index);
+
+      for (let i = 0; i < m.length; i++) {
+	m[i] = tmp[i];
+      }
+
+      m.pop();
     }
-
-    m.pop();
 
     r.remove(this.value);
   };
