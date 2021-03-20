@@ -1,5 +1,10 @@
 import { DoublyLinkedList, DoublyLinkedListNode } from "./types";
 
+const log = (...args: any[]) => {
+  const divider = "\n=======================\n";
+  console.log(divider, ...args, divider);
+};
+
 function createNode<Data = any>(
   data: Data,
   previous: DoublyLinkedListNode<Data>["previous"] = null
@@ -36,15 +41,35 @@ function doublyLinkedListFactory<Value = any>(): DoublyLinkedList<Value> {
       const { data, next, previous } = currNode;
 
       if (data === value) {
+        // make the previous node reference the next node
         if (previous) {
           previous.next = next;
-        } else {
-          head = next;
         }
 
+        // make the next node reference the previous node
+        if (next) {
+          next.previous = previous;
+        }
+
+        // if we're at head
+        if (!previous) {
+          head = next;
+
+          if (head) {
+            head.previous = null;
+          }
+        }
+
+        // if we're at tail
         if (!next) {
           tail = previous ? previous : head;
+
+          if (tail) {
+            tail.next = null;
+          }
         }
+
+        break;
       }
 
       currNode = next;
@@ -65,8 +90,8 @@ function doublyLinkedListFactory<Value = any>(): DoublyLinkedList<Value> {
 
   return {
     add,
-    remove,
     elementAt,
+    remove,
   };
 }
 
