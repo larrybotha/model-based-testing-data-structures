@@ -42,7 +42,7 @@ class RemoveCommand implements DoublyLinkedListCommand {
       const tmp = m.filter((_, i) => i !== index);
 
       for (let i = 0; i < m.length; i++) {
-	m[i] = tmp[i];
+        m[i] = tmp[i];
       }
 
       m.pop();
@@ -74,7 +74,7 @@ class ElementAtCommand implements DoublyLinkedListCommand {
   toString = () => `elementAt(${this.index})`;
 }
 
-const values = fc.sample(fc.json(), 100);
+const values = fc.sample(fc.jsonObject(), 100);
 const arbIndex = fc.integer({ min: 0, max: values.length });
 
 const commands = [
