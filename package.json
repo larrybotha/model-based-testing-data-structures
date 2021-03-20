@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "test:watch": "node --inspect $(npm bin)/jest --watch",
+    "test:watch": "node --inspect $(npm bin)/jest --watch --no-cache",
     "dev": "ts-node-dev --require tsconfig-paths/register --respawn --rs"
   },
   "repository": {
