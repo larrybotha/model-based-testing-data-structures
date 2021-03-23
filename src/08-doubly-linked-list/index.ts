@@ -88,9 +88,24 @@ function doublyLinkedListFactory<Value = any>(): DoublyLinkedList<Value> {
     return currNode ? currNode.data : null;
   }
 
+  function find(value: Value) {
+    let currNode = head;
+
+    while (currNode) {
+      if (currNode.data === value) {
+        break;
+      }
+
+      currNode = currNode.next;
+    }
+
+    return currNode ? currNode : null;
+  }
+
   return {
     add,
     elementAt,
+    find,
     remove,
   };
 }

@@ -8,4 +8,5 @@ export interface DoublyLinkedList<Value = any> {
   add(value: Value): void;
   remove(value: Value): void;
   elementAt(index: number): Value | null;
+  find(value: Value): DoublyLinkedListNode<Value> | null;
 }
