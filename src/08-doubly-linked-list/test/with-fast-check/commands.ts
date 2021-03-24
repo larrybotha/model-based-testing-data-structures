@@ -134,6 +134,24 @@ class FindCommand implements DoublyLinkedListCommand {
   toString = () => `find(${this.value})`;
 }
 
+/**
+ * ReverseCommand
+ *
+ * @implements {DoublyLinkedListCommand}
+ */
+class ReverseCommand implements DoublyLinkedListCommand {
+  constructor() {}
+
+  check = () => true;
+
+  run = (m: Model, r: DoublyLinkedList) => {
+    m.reverse();
+    r.reverse();
+  };
+
+  toString = () => `reverse()`;
+}
+
 const values = fc.sample(fc.jsonObject(), 100);
 const arbIndex = fc.integer({ min: 0, max: values.length });
 
@@ -142,6 +160,7 @@ const commands = [
   arbIndex.map((index) => new RemoveCommand(values[index])),
   arbIndex.map((index) => new ElementAtCommand(index)),
   arbIndex.map((index) => new FindCommand(values[index])),
+  fc.constant(new ReverseCommand()),
 ];
 
 export { commands };

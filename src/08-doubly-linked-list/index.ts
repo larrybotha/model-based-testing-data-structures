@@ -102,11 +102,40 @@ function doublyLinkedListFactory<Value = any>(): DoublyLinkedList<Value> {
     return currNode ? currNode : null;
   }
 
+  function reverse() {
+    let currNode = head;
+    let newTail = null;
+    let newHead = null;
+
+    while (currNode) {
+      const { previous, next } = currNode;
+
+      // if head
+      if (!previous) {
+        newTail = currNode;
+      }
+
+      // if tail
+      if (!next) {
+        newHead = currNode;
+      }
+
+      currNode.next = previous;
+      currNode.previous = next;
+
+      currNode = next;
+    }
+
+    head = newHead;
+    tail = newTail;
+  }
+
   return {
     add,
     elementAt,
     find,
     remove,
+    reverse,
   };
 }
 
