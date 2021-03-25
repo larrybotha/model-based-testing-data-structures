@@ -5,9 +5,6 @@
 **Table of Contents**
 
 - [Complexity](#complexity)
-- [Examples](#examples)
-- [When to use](#when-to-use)
-- [Notes](#notes)
 - [Resources](#resources)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -28,20 +25,11 @@ $ node -r ./node_modules/ts-node/register ./src/08-doubly-linked-list/benchmark.
 
 ## Complexity
 
-- [method1]:
-
-## Examples
-
--
-
-## When to use
-
--
-
-## Notes
-
--
+- [add]: O(n)
+- [remove]: O(n)
+- [find]: O(n)
 
 ## Resources
 
--
+- [Doubly Linked List - Javascript Algorithms](https://github.com/trekhleb/javascript-algorithms/tree/master/src/data-structures/doubly-linked-list)
+- [Geeks For Geeks - Doubly Linked List](https://www.geeksforgeeks.org/doubly-linked-list/)
