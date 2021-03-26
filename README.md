@@ -23,3 +23,4 @@ Questions](https://www.freecodecamp.org/learn/coding-interview-prep/data-structu
 - [06 - Linked List](./src/06-linked-list)
 - [07 - Hash Table](./src/07-hash-table)
 - [08 - Doubly Linked List](./src/08-doubly-linked-list)
+- [09 - Binary Search Tree](./src/09-binary-search-tree)
