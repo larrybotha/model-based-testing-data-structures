@@ -47,6 +47,10 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
     }
   }
 
+  function insertNode(currNode, value) {}
+
+  function remove(x: Value) {}
+
   function isPresent(x: Value) {
     let currNode = root;
     let present = false;
@@ -72,6 +76,7 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
   return {
     add,
     isPresent,
+    remove,
   };
 };
 

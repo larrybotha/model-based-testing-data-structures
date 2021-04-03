@@ -7,4 +7,5 @@ export interface BinarySearchTreeNode<Value = any> {
 export interface BinarySearchTree<Value = any> {
   add(value: Value): void;
   isPresent(value: Value): boolean;
+  remove(value: Value): void;
 }
