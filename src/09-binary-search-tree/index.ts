@@ -4,9 +4,9 @@ const binarySearchTreeNodeFactory = <Value = any>(
   value: Value
 ): BinarySearchTreeNode<Value> => {
   return {
-    value,
     left: null,
     right: null,
+    value,
   };
 };
 
@@ -16,19 +16,17 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
   function add(x: Value) {
     const newNode = binarySearchTreeNodeFactory(x);
 
-    insertNode(newNode, root);
+    if (!root) {
+      root = newNode;
+    } else {
+      insertNode(newNode, root);
+    }
   }
 
   function insertNode(
     node: BinarySearchTreeNode,
-    parentNode: BinarySearchTreeNode | null
+    parentNode: BinarySearchTreeNode
   ) {
-    if (!parentNode) {
-      root = node;
-
-      return;
-    }
-
     const { value, left, right } = parentNode;
 
     if (node.value <= value) {
