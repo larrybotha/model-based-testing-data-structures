@@ -16,38 +16,37 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
   function add(x: Value) {
     const newNode = binarySearchTreeNodeFactory(x);
 
-    if (!root) {
-      root = newNode;
+    insertNode(newNode, root);
+  }
+
+  function insertNode(
+    node: BinarySearchTreeNode,
+    parentNode: BinarySearchTreeNode | null
+  ) {
+    if (!parentNode) {
+      root = node;
 
       return;
     }
 
-    let currNode = root;
+    const { value, left, right } = parentNode;
 
-    while (currNode) {
-      const { value, left, right } = currNode;
-
-      if (x <= value) {
-        if (!left) {
-          currNode.left = newNode;
-          break;
-        } else {
-          currNode = left;
-        }
+    if (node.value <= value) {
+      if (left) {
+        insertNode(node, left);
+      } else {
+        parentNode.left = node;
       }
+    }
 
-      if (x > value) {
-        if (!right) {
-          currNode.right = newNode;
-          break;
-        } else {
-          currNode = right;
-        }
+    if (node.value > value) {
+      if (right) {
+        insertNode(node, right);
+      } else {
+        parentNode.right = node;
       }
     }
   }
-
-  function insertNode(currNode, value) {}
 
   function remove(x: Value) {}
 
