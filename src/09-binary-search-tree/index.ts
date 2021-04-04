@@ -51,25 +51,26 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
   function remove(x: Value) {}
 
   function isPresent(x: Value) {
-    let currNode = root;
-    let present = false;
+    return nodeContainsValue(root, x);
+  }
 
-    while (currNode && !present) {
-      const { value, left, right } = currNode;
-
-      if (x === value) {
-        present = true;
-        break;
-      }
-
-      if (x <= value) {
-        currNode = left;
-      } else {
-        currNode = right;
-      }
+  function nodeContainsValue(
+    node: BinarySearchTreeNode | null,
+    x: Value
+  ): boolean {
+    if (!node) {
+      return false;
     }
 
-    return present;
+    const { value, left, right } = node;
+
+    if (value === x) {
+      return true;
+    }
+
+    return x <= value
+      ? nodeContainsValue(left, x)
+      : nodeContainsValue(right, x);
   }
 
   return {
