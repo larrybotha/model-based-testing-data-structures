@@ -46,7 +46,7 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
     }
   }
 
-  function remove(x: Value) {}
+  function remove(_x: Value) {}
 
   function isPresent(x: Value) {
     return nodeContainsValue(root, x);
@@ -71,8 +71,40 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
       : nodeContainsValue(right, x);
   }
 
+  function findMinHeight(node = root, currentValue = -1) {
+    if (!node) {
+      return currentValue;
+    }
+
+    const { left, right } = node;
+    const [leftHeight, rightHeight] = [
+      findMinHeight(left, currentValue + 1),
+      findMinHeight(right, currentValue + 1),
+    ];
+    const minHeight = Math.min(leftHeight, rightHeight);
+
+    return minHeight;
+  }
+
+  function findMaxHeight(node = root, currentValue = -1) {
+    if (!node) {
+      return currentValue;
+    }
+
+    const { left, right } = node;
+    const [leftHeight, rightHeight] = [
+      findMinHeight(left, currentValue + 1),
+      findMinHeight(right, currentValue + 1),
+    ];
+    const maxHeight = Math.max(leftHeight, rightHeight);
+
+    return maxHeight;
+  }
+
   return {
     add,
+    findMaxHeight,
+    findMinHeight,
     isPresent,
     remove,
   };

@@ -8,4 +8,6 @@ export interface BinarySearchTree<Value = any> {
   add(value: Value): void;
   isPresent(value: Value): boolean;
   remove(value: Value): void;
+  findMinHeight(node?: BinarySearchTreeNode, currentValue?: number): number;
+  findMaxHeight(node?: BinarySearchTreeNode, currentValue?: number): number;
 }

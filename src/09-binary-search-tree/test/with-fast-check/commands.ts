@@ -51,6 +51,69 @@ class AddCommand implements BinarySearchTreeCommand {
 }
 
 /**
+ * FindMinHeightCommand
+ *
+ * @implements {BinarySearchTreeCommand}
+ */
+class FindMinHeightCommand implements BinarySearchTreeCommand {
+  check = () => true;
+
+  run = (m: Model, r: BinarySearchTree) => {
+    const { length } = m;
+    const minHeight = r.findMinHeight();
+
+    switch (true) {
+      case length === 0: {
+        expect(minHeight).toBe(-1);
+        break;
+      }
+      case length === 1: {
+        expect(minHeight).toBe(0);
+        break;
+      }
+      default: {
+        expect(minHeight).toBeGreaterThanOrEqual(0);
+        break;
+      }
+    }
+  };
+
+  toString = () => `findMinHeight()`;
+}
+
+/**
+ * FindMaxHeightCommand
+ *
+ * @implements {BinarySearchTreeCommand}
+ */
+class FindMaxHeightCommand implements BinarySearchTreeCommand {
+  check = () => true;
+
+  run = (m: Model, r: BinarySearchTree) => {
+    const { length } = m;
+    const maxHeight = r.findMaxHeight();
+
+    switch (true) {
+      case length === 0: {
+        expect(maxHeight).toBe(-1);
+        break;
+      }
+      case length === 1: {
+        expect(maxHeight).toBe(0);
+        break;
+      }
+      default: {
+        expect(maxHeight).toBeGreaterThanOrEqual(1);
+        expect(maxHeight).toBeLessThanOrEqual(length);
+        break;
+      }
+    }
+  };
+
+  toString = () => `findMaxHeight()`;
+}
+
+/**
  * RemoveCommand
  *
  * @implements {BinarySearchTreeCommand}
@@ -84,6 +147,8 @@ const commands = [
   arbIndex.map((index) => new AddCommand(values[index])),
   //arbIndex.map((index) => new RemoveCommand(values[index])),
   arbIndex.map((index) => new IsPresentCommand(values[index])),
+  fc.constant(new FindMinHeightCommand()),
+  fc.constant(new FindMaxHeightCommand()),
 ];
 
 export { commands };
