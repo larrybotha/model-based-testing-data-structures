@@ -4,7 +4,12 @@ import { BinarySearchTree } from "../../types";
 
 type BinarySearchTreeCommand = Command<any, BinarySearchTree>;
 
-export type Model = any[];
+interface ModelEntry<Value = any> {
+  addIndex: number;
+  value: Value;
+}
+
+export type Model = ModelEntry[];
 /**
  * IsPresentCommand
  *
@@ -16,7 +21,8 @@ class IsPresentCommand implements BinarySearchTreeCommand {
   check = () => true;
 
   run = (m: Model, r: BinarySearchTree) => {
-    const isPresentInModel = m.indexOf(this.value) > -1;
+    const mValues = m.map(({ value }) => value);
+    const isPresentInModel = mValues.indexOf(this.value) > -1;
     const isPresent = r.isPresent(this.value);
 
     expect(isPresent).toBe(isPresentInModel);
@@ -36,9 +42,13 @@ class AddCommand implements BinarySearchTreeCommand {
   check = () => true;
 
   run = (m: Model, r: BinarySearchTree) => {
-    const mValue = m.find((v) => v > this.value);
-    const index = mValue ? m.indexOf(mValue) : 0;
-    const ms = m.slice(0, index).concat(this.value).concat(m.slice(index));
+    const mValues = m.map(({ value }) => value);
+    const mValue = mValues.find((v) => v > this.value);
+    const index = mValue ? mValues.indexOf(mValue) : 0;
+    const ms = m
+      .slice(0, index)
+      .concat({ value: this.value, addIndex: m.length })
+      .concat(m.slice(index));
 
     for (let i = 0; i < ms.length; i++) {
       m[i] = ms[i];
@@ -114,6 +124,89 @@ class FindMaxHeightCommand implements BinarySearchTreeCommand {
 }
 
 /**
+ * InOrderCommand
+ *
+ * @implements {BinarySearchTreeCommand}
+ */
+class InOrderCommand implements BinarySearchTreeCommand {
+  check = () => true;
+
+  run = (m: Model, r: BinarySearchTree) => {
+    const sortedMs = m
+      .sort(({ value: aValue }, { value: bValue }) =>
+        aValue > bValue ? 1 : -1
+      )
+      .map(({ value }) => value);
+    const inOrderR = r.inOrder();
+
+    expect(inOrderR).toEqual(sortedMs);
+  };
+
+  toString = () => `inOrder()`;
+}
+
+/**
+ * PostOrderCommand
+ *
+ * @implements {BinarySearchTreeCommand}
+ */
+class PostOrderCommand implements BinarySearchTreeCommand {
+  check = () => true;
+
+  run = (m: Model, r: BinarySearchTree) => {
+    const indexOrderedMs = m
+      .sort(({ addIndex: addIndexA }, { addIndex: addIndexB }) =>
+        addIndexA > addIndexB ? 1 : -1
+      )
+      .map(({ value }) => value);
+    const [firstEntry, secondEntry] = indexOrderedMs;
+    const postOrderedXs = r.postOrder();
+    // root is last value from post order result
+    // left or right of root is element before root
+    const [root, leftOrRightA] = postOrderedXs.slice().reverse();
+    // other left or right of root is first value after root that is lte root
+    const leftOrRightB = postOrderedXs
+      .slice(0, -1)
+      .reverse()
+      .find((x) => x <= root);
+
+    expect(root).toBe(firstEntry);
+    expect([leftOrRightA, leftOrRightB]).toContain(secondEntry);
+  };
+
+  toString = () => `postOrder()`;
+}
+
+/**
+ * PreOrderCommand
+ *
+ * @implements {BinarySearchTreeCommand}
+ */
+class PreOrderCommand implements BinarySearchTreeCommand {
+  check = () => true;
+
+  run = (m: Model, r: BinarySearchTree) => {
+    const indexOrderedMs = m
+      .sort(({ addIndex: addIndexA }, { addIndex: addIndexB }) =>
+        addIndexA > addIndexB ? 1 : -1
+      )
+      .map(({ value }) => value);
+    const [firstEntry, secondEntry] = indexOrderedMs;
+    const preOrderedXs = r.preOrder();
+    // root is first value from post order result
+    // left or right of root is second value
+    const [root, leftOrRightA] = preOrderedXs;
+    // other left or right of root is first value after root that is gt root
+    const leftOrRightB = preOrderedXs.slice(1).find((x) => x > root);
+
+    expect(root).toBe(firstEntry);
+    expect([leftOrRightA, leftOrRightB]).toContain(secondEntry);
+  };
+
+  toString = () => `preOrder()`;
+}
+
+/**
  * RemoveCommand
  *
  * @implements {BinarySearchTreeCommand}
@@ -149,6 +242,9 @@ const commands = [
   arbIndex.map((index) => new IsPresentCommand(values[index])),
   fc.constant(new FindMinHeightCommand()),
   fc.constant(new FindMaxHeightCommand()),
+  fc.constant(new InOrderCommand()),
+  fc.constant(new PostOrderCommand()),
+  fc.constant(new PreOrderCommand()),
 ];
 
 export { commands };

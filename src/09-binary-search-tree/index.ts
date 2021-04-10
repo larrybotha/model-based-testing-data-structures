@@ -101,12 +101,54 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
     return maxHeight;
   }
 
+  function inOrder(node = root): Value[] {
+    if (!node) {
+      return [];
+    }
+
+    const { left, right, value } = node;
+    const [leftValues, rightValues] = [left, right].map((n) => inOrder(n));
+    const result = [...leftValues, value, ...rightValues];
+
+    return result;
+  }
+
+  function postOrder(node = root): Value[] {
+    if (!node) {
+      return [];
+    }
+
+    const { left, right, value } = node;
+    const [leftValues, rightValues] = [left, right].map((n) => postOrder(n));
+    const result = [...leftValues, ...rightValues, value];
+
+    return result;
+  }
+
+  function preOrder(node = root): Value[] {
+    if (!node) {
+      return [];
+    }
+
+    const { left, right, value } = node;
+    const [leftValues, rightValues] = [left, right].map((n) => preOrder(n));
+    const result = [value, ...leftValues, ...rightValues];
+
+    return result;
+  }
+
   return {
     add,
     findMaxHeight,
     findMinHeight,
     isPresent,
+
     remove,
+
+    // depth-first search
+    inOrder,
+    postOrder,
+    preOrder,
   };
 };
 
