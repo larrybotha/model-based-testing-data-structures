@@ -207,6 +207,33 @@ class PreOrderCommand implements BinarySearchTreeCommand {
 }
 
 /**
+ * LevelOrderCommand
+ *
+ * @implements {BinarySearchTreeCommand}
+ */
+class LevelOrderCommand implements BinarySearchTreeCommand {
+  check = () => true;
+
+  run = (m: Model, r: BinarySearchTree) => {
+    const indexOrderedMs = m
+      .sort(({ addIndex: addIndexA }, { addIndex: addIndexB }) =>
+        addIndexA > addIndexB ? 1 : -1
+      )
+      .map(({ value }) => value);
+    const [firstEntry, secondEntry] = indexOrderedMs;
+    const levelOrderedXs = r.levelOrder();
+    // root is last value from post order result
+    // left or right of root is element before root
+    const [root, leftOrRightA, leftOrRightB] = levelOrderedXs.slice();
+
+    expect(root).toBe(firstEntry);
+    expect([leftOrRightA, leftOrRightB]).toContain(secondEntry);
+  };
+
+  toString = () => `levelOrder()`;
+}
+
+/**
  * RemoveCommand
  *
  * @implements {BinarySearchTreeCommand}
@@ -245,6 +272,7 @@ const commands = [
   fc.constant(new InOrderCommand()),
   fc.constant(new PostOrderCommand()),
   fc.constant(new PreOrderCommand()),
+  fc.constant(new LevelOrderCommand()),
 ];
 
 export { commands };

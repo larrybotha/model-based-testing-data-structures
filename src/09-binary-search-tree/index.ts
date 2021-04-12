@@ -137,6 +137,8 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
     return result;
   }
 
+  function levelOrder() {}
+
   return {
     add,
     findMaxHeight,
@@ -149,6 +151,9 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
     inOrder,
     postOrder,
     preOrder,
+
+    // breadh-first search
+    levelOrder,
   };
 };
 
