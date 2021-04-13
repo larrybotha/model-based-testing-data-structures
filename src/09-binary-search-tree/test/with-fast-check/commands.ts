@@ -222,12 +222,41 @@ class LevelOrderCommand implements BinarySearchTreeCommand {
       .map(({ value }) => value);
     const [firstEntry, secondEntry] = indexOrderedMs;
     const levelOrderedXs = r.levelOrder();
-    // root is last value from post order result
-    // left or right of root is element before root
-    const [root, leftOrRightA, leftOrRightB] = levelOrderedXs.slice();
+    // root is the first value from levelOrder result
+    // left is the second value from levelOrder result
+    // right is the third value from the levelOrder result
+    const [root, left, right] = levelOrderedXs;
 
     expect(root).toBe(firstEntry);
-    expect([leftOrRightA, leftOrRightB]).toContain(secondEntry);
+    expect([left, right]).toContain(secondEntry);
+  };
+
+  toString = () => `levelOrder()`;
+}
+
+/**
+ * ReverseLevelOrderCommand
+ *
+ * @implements {BinarySearchTreeCommand}
+ */
+class ReverseLevelOrderCommand implements BinarySearchTreeCommand {
+  check = () => true;
+
+  run = (m: Model, r: BinarySearchTree) => {
+    const indexOrderedMs = m
+      .sort(({ addIndex: addIndexA }, { addIndex: addIndexB }) =>
+        addIndexA > addIndexB ? 1 : -1
+      )
+      .map(({ value }) => value);
+    const [firstEntry, secondEntry] = indexOrderedMs;
+    const reverseLevelOrderedXs = r.reverseLevelOrder();
+    // root is the first value from reverseLevelOrder result
+    // right is the second value from the reverseLevelOrder result
+    // left is the third value from reverseLevelOrder result
+    const [root, right, left] = reverseLevelOrderedXs;
+
+    expect(root).toBe(firstEntry);
+    expect([left, right]).toContain(secondEntry);
   };
 
   toString = () => `levelOrder()`;

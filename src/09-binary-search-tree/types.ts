@@ -18,5 +18,5 @@ export interface BinarySearchTree<Value = any> {
 
   // breadth-first search
   levelOrder(): Value[];
-  //reverseLevelOrder(): Value[];
+  reverseLevelOrder(): Value[];
 }

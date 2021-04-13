@@ -10,6 +10,8 @@ const binarySearchTreeNodeFactory = <Value = any>(
   };
 };
 
+const nodeGuard = (node: any): node is BinarySearchTreeNode => node !== null;
+
 const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
   let root: BinarySearchTreeNode<Value> | null = null;
 
@@ -137,7 +139,33 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
     return result;
   }
 
-  function levelOrder() {}
+  function levelOrder() {
+    let queue = [root].filter(nodeGuard);
+    let nodes: BinarySearchTreeNode[] = [];
+
+    while (queue.length > 0) {
+      const node = queue[0];
+      const { left, right } = node;
+      queue = queue.slice(1).concat([left, right].filter(nodeGuard));
+      nodes = nodes.concat(node);
+    }
+
+    return nodes.map(({ value }) => value);
+  }
+
+  function reverseLevelOrder() {
+    let queue = [root].filter(nodeGuard);
+    let nodes: BinarySearchTreeNode[] = [];
+
+    while (queue.length > 0) {
+      const node = queue[0];
+      const { left, right } = node;
+      queue = queue.slice(1).concat([right, left].filter(nodeGuard));
+      nodes = nodes.concat(node);
+    }
+
+    return nodes.map(({ value }) => value);
+  }
 
   return {
     add,
@@ -154,6 +182,7 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
 
     // breadh-first search
     levelOrder,
+    reverseLevelOrder,
   };
 };
 
