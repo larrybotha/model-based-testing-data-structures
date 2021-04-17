@@ -103,6 +103,7 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
     return maxHeight;
   }
 
+  /** start depth-first search **/
   function inOrder(node = root): Value[] {
     if (!node) {
       return [];
@@ -138,34 +139,44 @@ const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
 
     return result;
   }
+  /** end depth-first search **/
 
+  /** start breadth-first search **/
   function levelOrder() {
-    let queue = [root].filter(nodeGuard);
-    let nodes: BinarySearchTreeNode[] = [];
+    const orderLtoR = ({ left, right }: BinarySearchTreeNode) => {
+      return [left, right].filter(nodeGuard);
+    };
 
-    while (queue.length > 0) {
-      const node = queue[0];
-      const { left, right } = node;
-      queue = queue.slice(1).concat([left, right].filter(nodeGuard));
-      nodes = nodes.concat(node);
-    }
-
-    return nodes.map(({ value }) => value);
+    return _breadthFirstSearch(orderLtoR);
   }
 
   function reverseLevelOrder() {
+    const orderRtoL = ({ left, right }: BinarySearchTreeNode) => {
+      return [right, left].filter(nodeGuard);
+    };
+
+    return _breadthFirstSearch(orderRtoL);
+  }
+
+  function _breadthFirstSearch(
+    orderFn: (node: BinarySearchTreeNode) => BinarySearchTreeNode[]
+  ) {
     let queue = [root].filter(nodeGuard);
     let nodes: BinarySearchTreeNode[] = [];
 
     while (queue.length > 0) {
       const node = queue[0];
-      const { left, right } = node;
-      queue = queue.slice(1).concat([right, left].filter(nodeGuard));
+      const orderedChildNodes = orderFn(node);
+
+      queue = queue.slice(1).concat(orderedChildNodes);
       nodes = nodes.concat(node);
     }
 
-    return nodes.map(({ value }) => value);
+    const result = nodes.map(({ value }) => value);
+
+    return result;
   }
+  /** end breadth-first search **/
 
   return {
     add,

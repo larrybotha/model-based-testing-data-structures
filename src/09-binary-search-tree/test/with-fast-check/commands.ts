@@ -221,14 +221,38 @@ class LevelOrderCommand implements BinarySearchTreeCommand {
       )
       .map(({ value }) => value);
     const [firstEntry, secondEntry] = indexOrderedMs;
+    // first lte value should be first after root in levelOrder
+    const firstLte = indexOrderedMs.slice(1).find((x) => x <= firstEntry);
+    // first gt value should be second after root in levelOrder
+    const firstGt = indexOrderedMs.slice(1).find((x) => x > firstEntry);
     const levelOrderedXs = r.levelOrder();
-    // root is the first value from levelOrder result
-    // left is the second value from levelOrder result
-    // right is the third value from the levelOrder result
-    const [root, left, right] = levelOrderedXs;
+    const [root, maybeLeft, maybeRight] = levelOrderedXs;
 
+    // root is the first value from levelOrder result
     expect(root).toBe(firstEntry);
-    expect([left, right]).toContain(secondEntry);
+    // the second entry must either be the root's left or right
+    expect([maybeLeft, maybeRight]).toContain(secondEntry);
+
+    /**
+     * if there are entries on either side of the root value, then we know that
+     * those values must be the 2nd and 3rd values in a breadth-first search, and
+     * that the root second value should be the root's left
+     */
+    if (firstGt && firstLte) {
+      expect(root).toBeGreaterThanOrEqual(maybeLeft);
+
+      /**
+       * the first greater number entered must be the third value in a levelOrder
+       * result
+       */
+      expect(maybeRight).toBe(firstGt);
+
+      /**
+       * the first smaller number entered must be the second value in a levelOrder
+       * result
+       */
+      expect(maybeLeft).toBe(firstLte);
+    }
   };
 
   toString = () => `levelOrder()`;
@@ -249,17 +273,41 @@ class ReverseLevelOrderCommand implements BinarySearchTreeCommand {
       )
       .map(({ value }) => value);
     const [firstEntry, secondEntry] = indexOrderedMs;
+    // first lte value should be second after root in reverseLevelOrder
+    const firstLte = indexOrderedMs.slice(1).find((x) => x <= firstEntry);
+    // first gt value should be first after root in reverseLevelOrder
+    const firstGt = indexOrderedMs.slice(1).find((x) => x > firstEntry);
     const reverseLevelOrderedXs = r.reverseLevelOrder();
-    // root is the first value from reverseLevelOrder result
-    // right is the second value from the reverseLevelOrder result
-    // left is the third value from reverseLevelOrder result
-    const [root, right, left] = reverseLevelOrderedXs;
+    const [root, maybeRight, maybeLeft] = reverseLevelOrderedXs;
 
+    // root is the first value from levelOrder result
     expect(root).toBe(firstEntry);
-    expect([left, right]).toContain(secondEntry);
+    // the second entry must either be the root's left or right
+    expect([maybeLeft, maybeRight]).toContain(secondEntry);
+
+    /**
+     * if there are entries on either side of the root value, then we know that
+     * those values must be the 2nd and 3rd values in a breadth-first search, and
+     * that the root second value should be the root's right
+     */
+    if (firstLte && firstGt) {
+      expect(root).toBeLessThan(maybeRight);
+
+      /**
+       * the first greater number entered must be the third value in a levelOrder
+       * result
+       */
+      expect(maybeRight).toBe(firstGt);
+
+      /**
+       * the first smaller number entered must be the second value in a levelOrder
+       * result
+       */
+      expect(maybeLeft).toBe(firstLte);
+    }
   };
 
-  toString = () => `levelOrder()`;
+  toString = () => `reverseLevelOrder()`;
 }
 
 /**
@@ -302,6 +350,7 @@ const commands = [
   fc.constant(new PostOrderCommand()),
   fc.constant(new PreOrderCommand()),
   fc.constant(new LevelOrderCommand()),
+  fc.constant(new ReverseLevelOrderCommand()),
 ];
 
 export { commands };

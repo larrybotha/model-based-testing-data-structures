@@ -5,17 +5,13 @@ import { binarySearchTreeFactory } from "../..";
 import { commands, Model } from "./commands";
 
 const replay = false;
-const replayPath = replay ? "ad//J:d" : undefined;
+const replayPath = replay ? "JjU:F" : undefined;
 const commandOptions = {
   maxCommands: 100,
   replayPath,
 };
 const assertOptions = replay
-  ? {
-      seed: -1767774656,
-      path: "1:4:4:7:7:9:8:8:5:6:5:5:6:5:5:5:5:5",
-      endOnFailure: true,
-    }
+  ? { seed: -1144466223, path: "1:3:5:6:3", endOnFailure: true }
   : undefined;
 
 describe.each`
