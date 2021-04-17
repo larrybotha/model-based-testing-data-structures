@@ -346,9 +346,13 @@ const commands = [
   arbIndex.map((index) => new IsPresentCommand(values[index])),
   fc.constant(new FindMinHeightCommand()),
   fc.constant(new FindMaxHeightCommand()),
+
+  // depth-first search
   fc.constant(new InOrderCommand()),
   fc.constant(new PostOrderCommand()),
   fc.constant(new PreOrderCommand()),
+
+  // breadth-first search
   fc.constant(new LevelOrderCommand()),
   fc.constant(new ReverseLevelOrderCommand()),
 ];
