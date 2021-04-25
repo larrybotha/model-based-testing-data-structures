@@ -10,7 +10,9 @@ const binarySearchTreeNodeFactory = <Value = any>(
   };
 };
 
-const nodeGuard = (node: any): node is BinarySearchTreeNode => node !== null;
+const nodeGuard = (
+  node: BinarySearchTreeNode | null
+): node is BinarySearchTreeNode => node !== null;
 
 const binarySearchTreeFactory = <Value = any>(): BinarySearchTree<Value> => {
   let root: BinarySearchTreeNode<Value> | null = null;
